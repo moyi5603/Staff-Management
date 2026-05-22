@@ -1,0 +1,78 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: var(--card-gap);
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.tabs button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-white);
+  font-weight: 500;
+}
+
+.cardTitle {
+  margin: 0 0 16px;
+  font-size: var(--font-card);
+}
+
+.moduleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.moduleBtn {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-size: var(--font-body);
+}
+
+.moduleBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.steps {
+  color: var(--color-text-secondary);
+  font-size: var(--font-body);
+  margin-bottom: 16px;
+}
+
+.steps p {
+  margin: 8px 0;
+}
+
+.uploadZone {
+  margin-top: 16px;
+  border: 2px dashed var(--color-border);
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-placeholder);
+  border-radius: var(--radius-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  max-width: 320px;
+}
+
+.field select {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}

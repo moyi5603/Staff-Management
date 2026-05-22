@@ -1,0 +1,125 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: var(--card-gap);
+}
+
+.toolbar select {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.monthNav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar {
+  overflow-x: auto;
+}
+
+.weekHeader,
+.weekBody {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.weekLabel {
+  font-size: var(--font-helper);
+  font-weight: 500;
+  padding: 8px;
+  text-align: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+.dayCol {
+  min-height: 120px;
+}
+
+.emptyCell {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-placeholder);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.dutyCell {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  background: var(--color-white);
+}
+
+.deptName {
+  font-size: var(--font-helper);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dutyPerson {
+  font-size: var(--font-body);
+}
+
+.shift {
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  margin: 4px 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-white);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--font-body);
+}
+
+.modal select,
+.modal input {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.uploadZone {
+  border: 2px dashed var(--color-border);
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-placeholder);
+  border-radius: var(--radius-md);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
