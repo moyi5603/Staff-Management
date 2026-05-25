@@ -1,6 +1,6 @@
 export type EmployeeStatus = '在职' | '休假' | '离职';
 export type AccountStatus = '正常' | '已禁用' | '待激活';
-export type ProjectStatus = '筹备中' | '进行中' | '已结束';
+export type ProjectStatus = '未启动' | '进行中' | '已结束';
 export type DepartmentStatus = '正常' | '已撤销';
 export type ProjectMemberRole = '负责人' | '核心成员' | '一般成员';
 

@@ -19,10 +19,7 @@ export const menuConfig: MenuItem[] = [
   {
     key: 'project',
     label: '项目管理',
-    children: [
-      { key: 'project-list', label: '项目列表', path: '/project/list' },
-      { key: 'project-archive', label: '项目归档', path: '/project/list?status=已结束' },
-    ],
+    children: [{ key: 'project-list', label: '项目列表', path: '/project/list' }],
   },
   {
     key: 'duty',
@@ -54,7 +51,7 @@ export const routeTitles: Record<string, string> = {
   '/employee/form': '员工编辑',
   '/department/list': '部门管理',
   '/position/list': '岗位管理',
-  '/project/list': '项目管理',
+  '/project/list': '项目列表',
   '/duty/calendar': '值班管理',
   '/tag/skill': '技能标签',
   '/tag/interest': '兴趣标签',

@@ -278,6 +278,19 @@ export const projects: Project[] = [
     endDate: '2024-02-28',
     status: '已结束',
   },
+  {
+    id: 'proj-3',
+    name: '智能找同事移动端',
+    description: '移动端入口与消息推送能力规划。',
+    departmentId: 'dept-tech',
+    departmentName: '技术部',
+    relatedDepartments: ['产品部'],
+    leaderId: 'emp-002',
+    leaderName: '李四',
+    members: [{ employeeId: 'emp-002', name: '李四', role: '负责人' }],
+    startDate: '2026-07-01',
+    status: '未启动',
+  },
 ];
 
 export const employees: Employee[] = [

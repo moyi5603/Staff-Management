@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { EmployeeProvider } from './context/EmployeeContext';
+import { ProjectProvider } from './context/ProjectContext';
 import { AdminLayout } from './layouts/AdminLayout';
 import { DepartmentList } from './pages/department/DepartmentList';
 import { DutyCalendar } from './pages/duty/DutyCalendar';
@@ -15,6 +16,7 @@ import { TagList } from './pages/tag/TagList';
 export default function App() {
   return (
     <EmployeeProvider>
+      <ProjectProvider>
       <Routes>
         <Route path="/" element={<AdminLayout />}>
           <Route index element={<Navigate to="/employee/list" replace />} />
@@ -33,6 +35,7 @@ export default function App() {
           <Route path="system/import" element={<SystemImport />} />
         </Route>
       </Routes>
+      </ProjectProvider>
     </EmployeeProvider>
   );
 }

@@ -8,6 +8,7 @@ interface EmployeeContextValue {
   addEmployee: (emp: Employee) => void;
   updateEmployee: (id: string, patch: Partial<Employee>) => void;
   removeEmployees: (ids: string[]) => void;
+  patchAllEmployees: (updater: (prev: Employee[]) => Employee[]) => void;
 }
 
 const EmployeeContext = createContext<EmployeeContextValue | null>(null);
@@ -32,9 +33,20 @@ export function EmployeeProvider({ children }: { children: ReactNode }) {
     setEmployees((prev) => prev.filter((e) => !idSet.has(e.id)));
   }, []);
 
+  const patchAllEmployees = useCallback((updater: (prev: Employee[]) => Employee[]) => {
+    setEmployees(updater);
+  }, []);
+
   const value = useMemo(
-    () => ({ employees, getById, addEmployee, updateEmployee, removeEmployees }),
-    [employees, getById, addEmployee, updateEmployee, removeEmployees],
+    () => ({
+      employees,
+      getById,
+      addEmployee,
+      updateEmployee,
+      removeEmployees,
+      patchAllEmployees,
+    }),
+    [employees, getById, addEmployee, updateEmployee, removeEmployees, patchAllEmployees],
   );
 
   return <EmployeeContext.Provider value={value}>{children}</EmployeeContext.Provider>;
