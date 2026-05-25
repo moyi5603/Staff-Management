@@ -90,6 +90,11 @@ export function EmployeeForm() {
       setTab('基础信息');
       return;
     }
+    if (status === '离职' && !leaveDate.trim()) {
+      setError('离职状态请填写离职日期');
+      setTab('基础信息');
+      return;
+    }
 
     const dept = DEPARTMENT_OPTIONS.find((d) => d.name === departmentName);
     const pos = POSITION_OPTIONS.find((p) => p.name === positionName);
@@ -113,7 +118,7 @@ export function EmployeeForm() {
       positionName,
       ...workLocation,
       joinDate,
-      leaveDate: leaveDate || undefined,
+      leaveDate: status === '离职' && leaveDate.trim() ? leaveDate.trim() : undefined,
       status,
       certificates,
       skills,
@@ -233,15 +238,18 @@ export function EmployeeForm() {
                   label="状态"
                   type="select"
                   value={status}
-                  onChange={(v) => setStatus(v as EmployeeStatus)}
+                  onChange={(v) => {
+                    const next = v as EmployeeStatus;
+                    setStatus(next);
+                    if (next !== '离职') setLeaveDate('');
+                  }}
                   options={['在职', '休假', '离职']}
                 />
                 <Field
-                  label="离职日期"
+                  label={status === '离职' ? '离职日期*' : '离职日期'}
                   type="date"
                   value={leaveDate}
                   onChange={setLeaveDate}
-                  placeholder={status === '离职' ? '离职时建议填写' : '选填'}
                 />
                 <label className={styles.field}>
                   <span>工作地点 *</span>

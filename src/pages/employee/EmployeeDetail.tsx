@@ -7,6 +7,7 @@ import { TagPill } from '../../components/TagPill';
 import { useEmployees } from '../../context/EmployeeContext';
 import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
 import { EmployeeInterestsSection } from './EmployeeInterestsSection';
+import { EmployeeProjectsSection } from './EmployeeProjectsSection';
 import { EmployeeSkillsSection } from './EmployeeSkillsSection';
 import { maskPhone } from '../../mock/data';
 import type { Employee } from '../../types';
@@ -15,12 +16,12 @@ import { formatWorkLocation } from '../../utils/workLocation';
 import { formatDate } from '../../utils/formatDate';
 import styles from './EmployeeDetail.module.css';
 
-const TABS = ['个人证书', '个人技能', '参与项目', '兴趣爱好'] as const;
+const TABS = ['个人证书', '个人技能', '兴趣爱好', '参与项目'] as const;
 
 export function EmployeeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getById, removeEmployees, updateEmployee } = useEmployees();
+  const { getById, removeEmployees } = useEmployees();
   const emp = getById(id ?? '');
   const [tab, setTab] = useState<(typeof TABS)[number]>('个人证书');
 
@@ -84,71 +85,21 @@ export function EmployeeDetail() {
         ))}
       </div>
 
-      <Card>
-        {renderTab(tab, emp, {
-          onCertificatesChange: (certificates) => updateEmployee(emp.id, { certificates }),
-          onSkillsChange: (skills) => updateEmployee(emp.id, { skills }),
-          onInterestsChange: (interests) => updateEmployee(emp.id, { interests }),
-        })}
-      </Card>
+      <Card>{renderTab(tab, emp)}</Card>
     </>
   );
 }
 
-function renderTab(
-  tab: string,
-  emp: Employee,
-  handlers: {
-    onCertificatesChange: (certificates: Employee['certificates']) => void;
-    onSkillsChange: (skills: Employee['skills']) => void;
-    onInterestsChange: (interests: Employee['interests']) => void;
-  },
-) {
+function renderTab(tab: string, emp: Employee) {
   switch (tab) {
     case '个人技能':
-      return <EmployeeSkillsSection skills={emp.skills} onChange={handlers.onSkillsChange} />;
+      return <EmployeeSkillsSection skills={emp.skills} readOnly />;
     case '个人证书':
-      return (
-        <EmployeeCertificatesSection
-          certificates={emp.certificates}
-          onChange={handlers.onCertificatesChange}
-        />
-      );
-    case '参与项目':
-      return (
-        <div className={styles.projectPanel}>
-          <div className={styles.projectToolbar}>
-            <span className={styles.projectSummary}>
-              {emp.projects.length > 0 ? `共 ${emp.projects.length} 个项目` : '暂无参与项目'}
-            </span>
-            <Button variant="text">+ 添加项目</Button>
-          </div>
-          {emp.projects.length > 0 && (
-            <ul className={styles.projectList}>
-              {emp.projects.map((p) => (
-                <li key={p.projectId} className={styles.projectRow}>
-                  <div className={styles.projectMain}>
-                    <span className={styles.projectName}>{p.projectName}</span>
-                    <StatusBadge status={p.status} />
-                    <span className={styles.projectRole}>角色：{p.role}</span>
-                  </div>
-                  <div className={styles.projectOps}>
-                    <Button variant="text">编辑</Button>
-                    <Button variant="danger">移除</Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      );
+      return <EmployeeCertificatesSection certificates={emp.certificates} readOnly />;
     case '兴趣爱好':
       return (
         <div>
-          <EmployeeInterestsSection
-            interests={emp.interests}
-            onChange={handlers.onInterestsChange}
-          />
+          <EmployeeInterestsSection interests={emp.interests} readOnly />
           {emp.interestGroups.length > 0 && (
             <Section title="兴趣小组">
               <div className={styles.interestGrid}>
@@ -160,6 +111,8 @@ function renderTab(
           )}
         </div>
       );
+    case '参与项目':
+      return <EmployeeProjectsSection projects={emp.projects} />;
     default:
       return null;
   }

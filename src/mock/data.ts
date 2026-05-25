@@ -321,8 +321,21 @@ export const employees: Employee[] = [
       { id: 'honor-1', name: '2023年度最佳产品经理', date: '2024-01-15', issuer: '公司管理层', description: '因在智能客服v2项目中卓越的产品设计获得该荣誉' },
     ],
     projects: [
-      { projectId: 'proj-1', projectName: '智能客服系统 v2.0', role: '负责人', status: '进行中' },
-      { projectId: 'proj-2', projectName: '企业知识库', role: '核心成员', status: '已结束' },
+      {
+        projectId: 'proj-1',
+        projectName: '智能客服系统 v2.0',
+        role: '负责人',
+        status: '进行中',
+        startDate: '2024-01-01',
+      },
+      {
+        projectId: 'proj-2',
+        projectName: '企业知识库',
+        role: '核心成员',
+        status: '已结束',
+        startDate: '2023-06-01',
+        endDate: '2024-02-28',
+      },
     ],
   },
   {
@@ -365,7 +378,15 @@ export const employees: Employee[] = [
       },
     ],
     honors: [],
-    projects: [{ projectId: 'proj-1', projectName: '智能客服系统 v2.0', role: '核心成员', status: '进行中' }],
+    projects: [
+      {
+        projectId: 'proj-1',
+        projectName: '智能客服系统 v2.0',
+        role: '核心成员',
+        status: '进行中',
+        startDate: '2024-01-01',
+      },
+    ],
   },
   {
     id: 'emp-003',

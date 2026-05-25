@@ -1,0 +1,63 @@
+.title {
+  margin: 0 0 16px;
+  font-size: var(--font-card);
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-placeholder);
+  font-size: var(--font-body);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-table);
+}
+
+.table th {
+  background: var(--color-bg);
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--color-table-hover);
+}
+
+.stripe td {
+  background: var(--color-table-stripe);
+}
+
+.nameCell {
+  font-weight: 500;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dateCell {
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}

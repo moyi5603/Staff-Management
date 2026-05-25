@@ -11,16 +11,18 @@ function newCertificateId() {
 
 interface Props {
   certificates: Certificate[];
-  onChange: (next: Certificate[]) => void;
+  onChange?: (next: Certificate[]) => void;
+  readOnly?: boolean;
 }
 
-export function EmployeeCertificatesSection({ certificates, onChange }: Props) {
+export function EmployeeCertificatesSection({ certificates, onChange, readOnly = false }: Props) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editing, setEditing] = useState<Certificate | null>(null);
 
   const closeEditModal = () => setEditing(null);
 
   const handlePickerConfirm = (names: string[]) => {
+    if (!onChange) return;
     const existing = new Set(certificates.map((c) => c.name.toLowerCase()));
     const added = names
       .filter((n) => !existing.has(n.toLowerCase()))
@@ -33,12 +35,13 @@ export function EmployeeCertificatesSection({ certificates, onChange }: Props) {
   };
 
   const handleSave = (values: CertificateFormValues) => {
-    if (!editing) return;
+    if (!onChange || !editing) return;
     onChange(certificates.map((c) => (c.id === editing.id ? { ...c, ...values } : c)));
     closeEditModal();
   };
 
   const handleDelete = (id: string) => {
+    if (!onChange) return;
     const target = certificates.find((c) => c.id === id);
     if (!target) return;
     if (!window.confirm(`确定删除证书「${target.name}」？`)) return;
@@ -47,15 +50,21 @@ export function EmployeeCertificatesSection({ certificates, onChange }: Props) {
 
   return (
     <div>
-      <div className={styles.header}>
-        <h4>证书列表</h4>
-        <Button variant="primary" onClick={() => setPickerOpen(true)}>
-          + 添加证书
-        </Button>
-      </div>
+      {readOnly ? (
+        <h4 className={styles.title}>证书列表</h4>
+      ) : (
+        <div className={styles.header}>
+          <h4>证书列表</h4>
+          <Button variant="primary" onClick={() => setPickerOpen(true)}>
+            + 添加证书
+          </Button>
+        </div>
+      )}
 
       {certificates.length === 0 ? (
-        <p className={styles.empty}>暂无个人证书，点击「添加证书」录入。</p>
+        <p className={styles.empty}>
+          {readOnly ? '暂无个人证书。' : '暂无个人证书，点击「添加证书」录入。'}
+        </p>
       ) : (
         <div className={styles.certGrid}>
           {certificates.map((c) => (
@@ -77,20 +86,22 @@ export function EmployeeCertificatesSection({ certificates, onChange }: Props) {
                   {c.issuer}
                 </p>
               )}
-              <div className={styles.certOps}>
-                <Button variant="text" onClick={() => setEditing(c)}>
-                  编辑
-                </Button>
-                <Button variant="danger" onClick={() => handleDelete(c.id)}>
-                  删除
-                </Button>
-              </div>
+              {!readOnly && (
+                <div className={styles.certOps}>
+                  <Button variant="text" onClick={() => setEditing(c)}>
+                    编辑
+                  </Button>
+                  <Button variant="danger" onClick={() => handleDelete(c.id)}>
+                    删除
+                  </Button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {pickerOpen && (
+      {!readOnly && pickerOpen && (
         <CertificatePickerModal
           existingNames={certificates.map((c) => c.name)}
           onConfirm={handlePickerConfirm}
@@ -98,7 +109,7 @@ export function EmployeeCertificatesSection({ certificates, onChange }: Props) {
         />
       )}
 
-      {editing !== null && (
+      {!readOnly && editing !== null && (
         <CertificateFormModal
           title="编辑证书"
           initial={editing}

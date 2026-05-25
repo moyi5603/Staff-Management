@@ -9,6 +9,8 @@ export function employeeProjectRef(
     projectName: project.name,
     role,
     status: project.status,
+    startDate: project.startDate,
+    endDate: project.endDate,
   };
 }
 

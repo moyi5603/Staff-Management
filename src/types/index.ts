@@ -145,7 +145,14 @@ export interface Employee {
   interestGroups: string[];
   certificates: Certificate[];
   honors: Honor[];
-  projects: { projectId: string; projectName: string; role: ProjectMemberRole; status: ProjectStatus }[];
+  projects: {
+    projectId: string;
+    projectName: string;
+    role: ProjectMemberRole;
+    status: ProjectStatus;
+    startDate: string;
+    endDate?: string;
+  }[];
 }
 
 export interface DutyRecord {
