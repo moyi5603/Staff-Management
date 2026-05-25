@@ -9,7 +9,6 @@ import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
 import { EmployeeInterestsSection } from './EmployeeInterestsSection';
 import { EmployeeProjectsSection } from './EmployeeProjectsSection';
 import { EmployeeSkillsSection } from './EmployeeSkillsSection';
-import { maskPhone } from '../../mock/data';
 import type { Employee } from '../../types';
 import { formatEmployeeDisplayName, formatOptionalText } from '../../utils/employeeProfile';
 import { formatWorkLocation } from '../../utils/workLocation';
@@ -127,7 +126,7 @@ function BasicInfoPanel({ emp }: { emp: Employee }) {
       <InfoItem label="试用期截止" value={formatDate(emp.probationEndDate)} />
       <InfoItem label="籍贯" value={formatOptionalText(emp.nativePlace)} />
       <InfoItem label="政治面貌" value={formatOptionalText(emp.politicalStatus)} />
-      <InfoItem label="手机号" value={maskPhone(emp.phone)} />
+      <InfoItem label="手机号" value={emp.phone || '—'} />
       <InfoItem label="邮箱" value={emp.email} />
       <InfoItem label="部门" value={emp.departmentName} />
       <InfoItem label="岗位" value={emp.positionName} />
