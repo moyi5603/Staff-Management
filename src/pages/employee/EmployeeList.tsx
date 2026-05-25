@@ -15,7 +15,6 @@ import {
 import { departments } from '../../mock/data';
 import type { AccountStatus, Department, Employee } from '../../types';
 import { formatDate, formatDateTime } from '../../utils/formatDate';
-import { formatWorkLocation } from '../../utils/workLocation';
 import {
   cloneDepartmentTree,
   collectSubtree,
@@ -48,7 +47,6 @@ export function EmployeeList() {
   const [batchDept, setBatchDept] = useState<string>(DEPARTMENT_OPTIONS[0].name);
   const [batchStatus, setBatchStatus] = useState<EmployeeStatus>('在职');
   const [toast, setToast] = useState<string | null>(null);
-  const [openMoreId, setOpenMoreId] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -238,7 +236,6 @@ export function EmployeeList() {
                   <th>员工生日</th>
                   <th>入职时间</th>
                   <th>部门</th>
-                  <th>工作地点</th>
                   <th>手机号码</th>
                   <th>邮箱</th>
                   <th>试用截止</th>
@@ -257,12 +254,6 @@ export function EmployeeList() {
                     stripe={i % 2 === 1}
                     checked={selected.has(emp.id)}
                     onToggle={() => toggleOne(emp.id)}
-                    onDelete={() => requestDelete([emp.id], [emp.name])}
-                    moreOpen={openMoreId === emp.id}
-                    onMoreToggle={() =>
-                      setOpenMoreId((id) => (id === emp.id ? null : emp.id))
-                    }
-                    onMoreClose={() => setOpenMoreId(null)}
                     onAccountChange={(status: AccountStatus) => {
                       updateEmployee(emp.id, { accountStatus: status });
                       showToast(
@@ -386,20 +377,12 @@ function EmployeeRow({
   stripe,
   checked,
   onToggle,
-  onDelete,
-  moreOpen,
-  onMoreToggle,
-  onMoreClose,
   onAccountChange,
 }: {
   emp: Employee;
   stripe: boolean;
   checked: boolean;
   onToggle: () => void;
-  onDelete: () => void;
-  moreOpen: boolean;
-  onMoreToggle: () => void;
-  onMoreClose: () => void;
   onAccountChange: (status: AccountStatus) => void;
 }) {
   const accountEnabled = emp.accountStatus === '正常';
@@ -414,7 +397,6 @@ function EmployeeRow({
       <td className={styles.cellNowrap}>{formatDate(emp.birthday)}</td>
       <td className={styles.cellNowrap}>{formatDate(emp.joinDate)}</td>
       <td>{emp.departmentName}</td>
-      <td className={styles.cellNowrap}>{formatWorkLocation(emp)}</td>
       <td className={styles.cellNowrap}>{emp.phone || '—'}</td>
       <td>{emp.email || '—'}</td>
       <td className={styles.cellNowrap}>{formatDate(emp.probationEndDate)}</td>
@@ -436,19 +418,9 @@ function EmployeeRow({
           <Button variant="text">修改</Button>
         </Link>
         <div className={styles.moreWrap}>
-          <Button variant="text" onClick={onMoreToggle}>
+          <Button variant="text" type="button">
             更多
           </Button>
-          {moreOpen && (
-            <div className={styles.moreMenu} role="menu">
-              <Link to={`/employee/detail/${emp.id}`} onClick={onMoreClose}>
-                查看详情
-              </Link>
-              <button type="button" onClick={() => { onMoreClose(); onDelete(); }}>
-                删除
-              </button>
-            </div>
-          )}
         </div>
       </td>
     </tr>
