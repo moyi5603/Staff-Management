@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_BASE_PATH=/ vite",
-    "build": "VITE_BASE_PATH=/Staff-Management/ tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "tsc -b && VITE_BASE_PATH=/Staff-Management/ vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "preview:gh-pages": "npm run build && vite preview --base /Staff-Management/"
   },
