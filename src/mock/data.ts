@@ -17,12 +17,8 @@ export const departments: Department[] = [
     culture: '使命驱动、长期主义、开放透明。倡导「找对人、做对事」，以组织能力建设支撑业务可持续增长。',
     functionDetail:
       '1. 制定公司中长期战略与年度经营目标，并分解至各业务单元；\n2. 统筹重大投资、组织变革与风险管控；\n3. 建设企业文化、品牌与合规体系；\n4. 协调各一级部门资源，主持经营分析会与关键决策评审。',
-    kpis: [
-      { name: '营收同比增长', target: '≥ 15%', period: '年度' },
-      { name: '人均产出提升', target: '≥ 8%', period: '年度' },
-      { name: '核心人才保留率', target: '≥ 92%', period: '半年度' },
-      { name: '重大合规事件', target: '0 起', period: '年度' },
-    ],
+    performanceIndicators:
+      '营收同比增长：≥ 15%（年度）\n人均产出提升：≥ 8%（年度）\n核心人才保留率：≥ 92%（半年度）\n重大合规事件：0 起（年度）',
     status: '正常',
     employeeCount: 120,
     children: [
@@ -36,11 +32,8 @@ export const departments: Department[] = [
         culture: '用户第一、数据驱动、快速迭代。鼓励跨团队协作，以可衡量的业务结果为导向。',
         functionDetail:
           '1. 负责公司级产品战略规划与路线图制定；\n2. 统筹需求调研、竞品分析与产品立项评审；\n3. 协调研发、设计、运营等资源推进产品交付；\n4. 跟踪产品上线后的数据表现与用户反馈，持续优化体验。',
-        kpis: [
-          { name: '核心产品按时交付率', target: '≥ 90%', period: '季度' },
-          { name: '需求响应周期', target: '≤ 5 个工作日', period: '月度' },
-          { name: 'NPS 提升', target: '+3 分', period: '半年度' },
-        ],
+        performanceIndicators:
+          '核心产品按时交付率：≥ 90%（季度）\n需求响应周期：≤ 5 个工作日（月度）\nNPS 提升：+3 分（半年度）',
         status: '正常',
         employeeCount: 23,
         children: [
@@ -53,11 +46,8 @@ export const departments: Department[] = [
             culture: '深度思考、敢于说不。重视证据与逻辑，在有限资源下做最好的优先级判断。',
             functionDetail:
               '1. 开展行业与竞品研究，输出市场洞察报告；\n2. 维护产品路线图，组织立项评审与资源评估；\n3. 定义产品目标用户、价值主张与 MVP 范围；\n4. 协同各产品线 PM 对齐版本节奏与依赖关系。',
-            kpis: [
-              { name: '立项通过率（一次通过）', target: '≥ 70%', period: '季度' },
-              { name: '路线图变更可控率', target: '≤ 15%', period: '季度' },
-              { name: '洞察报告产出', target: '≥ 4 篇/季', period: '季度' },
-            ],
+            performanceIndicators:
+              '立项通过率（一次通过）：≥ 70%（季度）\n路线图变更可控率：≤ 15%（季度）\n洞察报告产出：≥ 4 篇/季（季度）',
             status: '正常',
             employeeCount: 8,
           },
@@ -70,11 +60,8 @@ export const departments: Department[] = [
             culture: '增长思维、实验精神、贴近用户。用 A/B 与数据验证每一个运营假设。',
             functionDetail:
               '1. 制定并执行用户增长、激活与留存策略；\n2. 策划运营活动、内容触达与渠道合作方案；\n3. 搭建产品数据看板，监控核心漏斗与异常波动；\n4. 收集用户反馈，推动产品体验与流程优化。',
-            kpis: [
-              { name: '月活用户增长率', target: '≥ 5%', period: '月度' },
-              { name: '7 日留存率', target: '≥ 40%', period: '月度' },
-              { name: '运营活动 ROI', target: '≥ 1.5', period: '季度' },
-            ],
+            performanceIndicators:
+              '月活用户增长率：≥ 5%（月度）\n7 日留存率：≥ 40%（月度）\n运营活动 ROI：≥ 1.5（季度）',
             status: '正常',
             employeeCount: 15,
           },
@@ -89,12 +76,8 @@ export const departments: Department[] = [
         culture: '工程卓越、代码即文档、安全左移。推崇技术债可视化管理，平衡交付速度与系统质量。',
         functionDetail:
           '1. 制定技术架构规范、研发流程与质量标准；\n2. 统筹前后端、基础设施与中间件能力建设；\n3. 保障生产环境稳定性、性能与安全合规；\n4. 推动技术选型、人才培养与研发效能提升。',
-        kpis: [
-          { name: '生产事故（P0/P1）', target: '≤ 2 次/季', period: '季度' },
-          { name: '系统可用性', target: '≥ 99.9%', period: '月度' },
-          { name: '需求研发交付周期', target: '≤ 15 人日（中位）', period: '月度' },
-          { name: '代码评审覆盖率', target: '100%', period: '月度' },
-        ],
+        performanceIndicators:
+          '生产事故（P0/P1）：≤ 2 次/季（季度）\n系统可用性：≥ 99.9%（月度）\n需求研发交付周期：≤ 15 人日（中位）（月度）\n代码评审覆盖率：100%（月度）',
         status: '正常',
         employeeCount: 45,
         children: [
@@ -107,11 +90,8 @@ export const departments: Department[] = [
             culture: '体验至上、组件复用、性能敏感。与设计和产品保持高频沟通，追求像素级还原与流畅交互。',
             functionDetail:
               '1. 承担管理后台、业务前台等前端功能开发与维护；\n2. 建设统一组件库、设计 Token 与前端工程化规范；\n3. 优化首屏加载、包体积与运行时性能；\n4. 参与需求评审，评估交互实现成本与技术方案。',
-            kpis: [
-              { name: '首屏加载时间（P75）', target: '≤ 2s', period: '月度' },
-              { name: '线上前端缺陷率', target: '≤ 0.5%', period: '月度' },
-              { name: '组件库复用率', target: '≥ 60%', period: '季度' },
-            ],
+            performanceIndicators:
+              '首屏加载时间（P75）：≤ 2s（月度）\n线上前端缺陷率：≤ 0.5%（月度）\n组件库复用率：≥ 60%（季度）',
             status: '正常',
             employeeCount: 12,
           },
@@ -124,11 +104,8 @@ export const departments: Department[] = [
             culture: '稳定可靠、接口清晰、可观测。坚持 API 契约先行，重视日志、监控与容灾演练。',
             functionDetail:
               '1. 设计与实现业务 API、权限体系与数据模型；\n2. 维护数据库、缓存、消息队列等基础设施；\n3. 建设 CI/CD、灰度发布与回滚机制；\n4. 配合安全团队完成漏洞修复与合规审计。',
-            kpis: [
-              { name: 'API P99 延迟', target: '≤ 300ms', period: '月度' },
-              { name: '接口自动化测试覆盖', target: '≥ 80%', period: '季度' },
-              { name: '数据备份恢复演练', target: '每季 1 次', period: '季度' },
-            ],
+            performanceIndicators:
+              'API P99 延迟：≤ 300ms（月度）\n接口自动化测试覆盖：≥ 80%（季度）\n数据备份恢复演练：每季 1 次（季度）',
             status: '正常',
             employeeCount: 18,
           },
@@ -143,12 +120,8 @@ export const departments: Department[] = [
         culture: '结果导向、客户共赢、诚信守诺。鼓励一线反馈驱动产品与定价优化，拒绝短期透支客户信任。',
         functionDetail:
           '1. 开拓目标客户，完成商机跟进、方案演示与商务谈判；\n2. 维护重点客户关系，推动续约、增购与转介绍；\n3. 协同产品与市场制定定价、套餐与行业解决方案；\n4. 汇总一线需求与竞争情报，反馈至产品与技术团队。',
-        kpis: [
-          { name: '年度签约金额', target: '≥ 5000 万', period: '年度' },
-          { name: '新客户签约数', target: '≥ 120 家', period: '年度' },
-          { name: '客户续约率', target: '≥ 85%', period: '半年度' },
-          { name: '销售周期（中位）', target: '≤ 45 天', period: '季度' },
-        ],
+        performanceIndicators:
+          '年度签约金额：≥ 5000 万（年度）\n新客户签约数：≥ 120 家（年度）\n客户续约率：≥ 85%（半年度）\n销售周期（中位）：≤ 45 天（季度）',
         status: '正常',
         employeeCount: 32,
       },
@@ -161,12 +134,8 @@ export const departments: Department[] = [
         culture: '以人为本、公平公正、赋能成长。倡导管理者对团队发展负责，打造学习型组织。',
         functionDetail:
           '1. 制定招聘计划，保障关键岗位及时到岗与人才梯队建设；\n2. 设计薪酬绩效、晋升与激励体系，组织年度绩效评估；\n3. 推动企业文化落地、员工关怀与劳动关系合规；\n4. 开展培训与发展项目，支撑「找同事」等内部协作能力建设。',
-        kpis: [
-          { name: '关键岗位到岗周期', target: '≤ 30 天', period: '季度' },
-          { name: '员工满意度', target: '≥ 4.2 / 5', period: '半年度' },
-          { name: '培训人均学时', target: '≥ 24 小时/年', period: '年度' },
-          { name: '劳动纠纷事件', target: '0 起', period: '年度' },
-        ],
+        performanceIndicators:
+          '关键岗位到岗周期：≤ 30 天（季度）\n员工满意度：≥ 4.2 / 5（半年度）\n培训人均学时：≥ 24 小时/年（年度）\n劳动纠纷事件：0 起（年度）',
         status: '正常',
         employeeCount: 8,
       },
@@ -181,16 +150,11 @@ export const positions: Position[] = [
     departmentId: 'dept-product',
     departmentName: '产品部',
     employeeCount: 5,
-    coreDuties: ['需求分析', '产品规划', '跨部门协调'],
+    coreDuties: '需求分析\n产品规划\n跨部门协调',
     detailDuty:
       '1. 负责产品需求调研、分析与优先级排序；\n2. 输出 PRD、原型与验收标准，推动研发交付；\n3. 跟踪上线数据与用户反馈，持续迭代产品体验。',
-    kpis: [
-      { name: '需求按时交付率', target: '≥ 90%', period: '季度' },
-      { name: '核心功能上线数', target: '≥ 6 个/季', period: '季度' },
-      { name: '用户满意度', target: '≥ 4.2 分', period: '半年度' },
-      { name: '跨部门协作满意度', target: '≥ 4.0 分', period: '季度' },
-    ],
-    kpiCount: 4,
+    performanceIndicators:
+      '需求按时交付率：≥ 90%（季度）\n核心功能上线数：≥ 6 个/季（季度）\n用户满意度：≥ 4.2 分（半年度）\n跨部门协作满意度：≥ 4.0 分（季度）',
   },
   {
     id: 'pos-2',
@@ -198,15 +162,11 @@ export const positions: Position[] = [
     departmentId: 'dept-tech',
     departmentName: '技术部',
     employeeCount: 8,
-    coreDuties: ['页面开发', '组件封装', '性能优化'],
+    coreDuties: '页面开发\n组件封装\n性能优化',
     detailDuty:
       '1. 按设计稿与接口文档完成 Web/管理端页面开发；\n2. 沉淀可复用组件与前端工程规范；\n3. 参与 Code Review，保障性能、可访问性与代码质量。',
-    kpis: [
-      { name: '需求交付周期', target: '≤ 10 人日（中位）', period: '月度' },
-      { name: '线上缺陷率', target: '≤ 0.5%', period: '季度' },
-      { name: '组件复用率', target: '≥ 60%', period: '半年度' },
-    ],
-    kpiCount: 3,
+    performanceIndicators:
+      '需求交付周期：≤ 10 人日（中位）（月度）\n线上缺陷率：≤ 0.5%（季度）\n组件复用率：≥ 60%（半年度）',
   },
   {
     id: 'pos-3',
@@ -214,17 +174,11 @@ export const positions: Position[] = [
     departmentId: 'dept-sales',
     departmentName: '销售部',
     employeeCount: 12,
-    coreDuties: ['客户拓展', '合同跟进', '回款管理'],
+    coreDuties: '客户拓展\n合同跟进\n回款管理',
     detailDuty:
       '1. 开拓与维护目标客户，完成商机跟进与报价；\n2. 推动合同签署、交付协调与回款；\n3. 定期汇报销售漏斗与客户反馈，支撑产品与市场策略。',
-    kpis: [
-      { name: '季度签约额', target: '≥ 200 万', period: '季度' },
-      { name: '新客户数', target: '≥ 8 家/季', period: '季度' },
-      { name: '回款率', target: '≥ 85%', period: '季度' },
-      { name: '客户满意度', target: '≥ 4.5 分', period: '半年度' },
-      { name: '商机转化率', target: '≥ 25%', period: '季度' },
-    ],
-    kpiCount: 5,
+    performanceIndicators:
+      '季度签约额：≥ 200 万（季度）\n新客户数：≥ 8 家/季（季度）\n回款率：≥ 85%（季度）\n客户满意度：≥ 4.5 分（半年度）\n商机转化率：≥ 25%（季度）',
   },
 ];
 
@@ -326,6 +280,11 @@ export const employees: Employee[] = [
         projectName: '智能客服系统 v2.0',
         role: '负责人',
         status: '进行中',
+        level: '公司级',
+        priority: '高',
+        departmentName: '产品部',
+        leaderName: '张三',
+        membersSummary: '张三、李四、王五',
         startDate: '2024-01-01',
       },
       {
@@ -333,6 +292,11 @@ export const employees: Employee[] = [
         projectName: '企业知识库',
         role: '核心成员',
         status: '已结束',
+        level: '部门级',
+        priority: '中',
+        departmentName: '产品部',
+        leaderName: '陈丽华',
+        membersSummary: '张三、陈丽华',
         startDate: '2023-06-01',
         endDate: '2024-02-28',
       },
@@ -384,6 +348,11 @@ export const employees: Employee[] = [
         projectName: '智能客服系统 v2.0',
         role: '核心成员',
         status: '进行中',
+        level: '公司级',
+        priority: '高',
+        departmentName: '产品部',
+        leaderName: '张三',
+        membersSummary: '张三、李四、王五',
         startDate: '2024-01-01',
       },
     ],

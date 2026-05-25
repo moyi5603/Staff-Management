@@ -1,6 +1,5 @@
 import { CatalogTagPickerModal } from '../../components/CatalogTagPickerModal';
 import { useTagCatalog } from '../../context/TagCatalogContext';
-import { INTEREST_TAG_PICKER_MAX } from '../../data/interestTagCatalog';
 import { labelForEmployeeTag } from '../../utils/tagLabel';
 
 interface Props {
@@ -20,7 +19,6 @@ export function InterestPickerModal({ existingNames, onConfirm, onClose }: Props
   return (
     <CatalogTagPickerModal
       title="兴趣爱好"
-      maxCount={INTEREST_TAG_PICKER_MAX}
       catalog={interestCatalog}
       existingNames={existingNames}
       inputPlaceholder="请输入兴趣名称，回车添加自定义（不入标签库）"

@@ -322,16 +322,6 @@
   border-radius: var(--radius-md);
 }
 
-.importPreview ul {
-  margin: 8px 0 0;
-  padding-left: 20px;
-  color: var(--color-text-secondary);
-}
-
-.importResult {
-  color: var(--color-success);
-}
-
 .confirmText {
   margin: 0 0 8px;
   color: var(--color-text-secondary);

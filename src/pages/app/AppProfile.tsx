@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { POLITICAL_STATUS_OPTIONS, type PoliticalStatus } from '../../types';
 import { employees } from '../../mock/data';
 import { InterestPickerModal } from '../employee/InterestPickerModal';
+import { SkillPickerModal } from '../employee/SkillPickerModal';
 import { AppEditSheet } from './AppEditSheet';
 import { AppNativePlaceSheet } from './AppNativePlaceSheet';
+import { AppPhotoSheet } from './AppPhotoSheet';
 import styles from './AppProfile.module.css';
 
 const DEMO_COMPANY = '北京北纬三十度网络科技有限公司';
@@ -25,10 +27,14 @@ export function AppProfile() {
   );
   const [nativePlace, setNativePlace] = useState(seed?.nativePlace ?? '');
   const [interests, setInterests] = useState<string[]>(() => [...(seed?.interests ?? [])]);
+  const [skills, setSkills] = useState<string[]>(() => [...(seed?.skills ?? [])]);
 
   const [editField, setEditField] = useState<EditField>(null);
   const [nativePlaceOpen, setNativePlaceOpen] = useState(false);
+  const [skillPickerOpen, setSkillPickerOpen] = useState(false);
   const [interestPickerOpen, setInterestPickerOpen] = useState(false);
+  const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
+  const [personalPhotoUrl, setPersonalPhotoUrl] = useState<string | null>(null);
 
   const politicalLabel = politicalStatus || '请选择';
   const nativePlaceLabel = nativePlace || '请选择';
@@ -38,6 +44,18 @@ export function AppProfile() {
     if (interests.length <= 3) return interests.join('、');
     return `${interests.slice(0, 3).join('、')} 等${interests.length}项`;
   }, [interests]);
+  const skillPreview = useMemo(() => {
+    if (skills.length === 0) return '请填写';
+    if (skills.length <= 3) return skills.join('、');
+    return `${skills.slice(0, 3).join('、')} 等${skills.length}项`;
+  }, [skills]);
+
+  const handleSkillConfirm = (names: string[]) => {
+    const existing = new Set(skills.map((s) => s.toLowerCase()));
+    const added = names.filter((n) => !existing.has(n.toLowerCase()));
+    if (added.length > 0) setSkills((prev) => [...prev, ...added]);
+    setSkillPickerOpen(false);
+  };
 
   const handleInterestConfirm = (names: string[]) => {
     const existing = new Set(interests.map((i) => i.toLowerCase()));
@@ -88,6 +106,19 @@ export function AppProfile() {
 
         <div className={styles.list}>
           <ProfileRow
+            label="个人照片"
+            clickable
+            onClick={() => setPhotoSheetOpen(true)}
+            value={
+              personalPhotoUrl ? (
+                <img src={personalPhotoUrl} alt="" className={styles.photoThumb} />
+              ) : (
+                '请上传'
+              )
+            }
+            placeholder={!personalPhotoUrl}
+          />
+          <ProfileRow
             label="个人介绍"
             value={bioPreview}
             placeholder={!bio.trim()}
@@ -107,6 +138,28 @@ export function AppProfile() {
             placeholder={!nativePlace}
             clickable
             onClick={() => setNativePlaceOpen(true)}
+          />
+          <ProfileRow
+            label="个人技能"
+            clickable
+            onClick={() => setSkillPickerOpen(true)}
+            value={
+              skills.length > 0 ? (
+                <span className={styles.tagPreview}>
+                  {skills.slice(0, 4).map((t) => (
+                    <span key={t} className={styles.tagChip}>
+                      {t}
+                    </span>
+                  ))}
+                  {skills.length > 4 && (
+                    <span className={styles.tagChip}>+{skills.length - 4}</span>
+                  )}
+                </span>
+              ) : (
+                skillPreview
+              )
+            }
+            placeholder={skills.length === 0}
           />
           <ProfileRow
             label="兴趣爱好"
@@ -144,7 +197,7 @@ export function AppProfile() {
         </div>
 
         <p className={styles.footerNote}>
-          本页为 App 端资料编辑原型，兴趣标签来自管理后台「兴趣标签管理」。
+          本页为 App 端资料编辑原型；技能/兴趣标签来自管理后台「技能标签管理」「兴趣标签管理」。
         </p>
       </div>
 
@@ -186,6 +239,19 @@ export function AppProfile() {
           value={nativePlace}
           onConfirm={setNativePlace}
           onClose={() => setNativePlaceOpen(false)}
+        />
+      )}
+      {photoSheetOpen && (
+        <AppPhotoSheet
+          onSelect={setPersonalPhotoUrl}
+          onClose={() => setPhotoSheetOpen(false)}
+        />
+      )}
+      {skillPickerOpen && (
+        <SkillPickerModal
+          existingNames={skills}
+          onConfirm={handleSkillConfirm}
+          onClose={() => setSkillPickerOpen(false)}
         />
       )}
       {interestPickerOpen && (

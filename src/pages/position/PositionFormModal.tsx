@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Button } from '../../components/Button';
-import type { Position, PositionKpi } from '../../types';
+import type { Position } from '../../types';
 import styles from './PositionList.module.css';
 
 export interface PositionFormValues {
   name: string;
   departmentId: string;
-  coreDuties: string[];
+  coreDuties: string;
   detailDuty: string;
-  kpis: PositionKpi[];
+  performanceIndicators: string;
 }
 
 interface Props {
@@ -19,8 +19,6 @@ interface Props {
   onSave: (values: PositionFormValues) => void;
   onClose: () => void;
 }
-
-const emptyKpi = (): PositionKpi => ({ name: '', target: '', period: '季度' });
 
 export function PositionFormModal({
   title,
@@ -34,12 +32,10 @@ export function PositionFormModal({
   const [departmentId, setDepartmentId] = useState(
     initial?.departmentId ?? defaultDepartmentId ?? departmentOptions[0]?.id ?? '',
   );
-  const [coreDuties, setCoreDuties] = useState<string[]>(
-    initial?.coreDuties?.length ? [...initial.coreDuties] : [''],
-  );
+  const [coreDuties, setCoreDuties] = useState(initial?.coreDuties ?? '');
   const [detailDuty, setDetailDuty] = useState(initial?.detailDuty ?? '');
-  const [kpis, setKpis] = useState<PositionKpi[]>(
-    initial?.kpis?.length ? initial.kpis.map((k) => ({ ...k })) : [emptyKpi()],
+  const [performanceIndicators, setPerformanceIndicators] = useState(
+    initial?.performanceIndicators ?? '',
   );
   const [error, setError] = useState('');
 
@@ -52,17 +48,16 @@ export function PositionFormModal({
       setError('请选择所属部门');
       return;
     }
-    const duties = coreDuties.map((d) => d.trim()).filter(Boolean);
-    if (duties.length === 0) {
-      setError('请至少填写一条核心职责');
+    if (!coreDuties.trim()) {
+      setError('请填写核心职责');
       return;
     }
     onSave({
       name: name.trim(),
       departmentId,
-      coreDuties: duties,
+      coreDuties: coreDuties.trim(),
       detailDuty: detailDuty.trim(),
-      kpis: kpis.filter((k) => k.name.trim()),
+      performanceIndicators: performanceIndicators.trim(),
     });
   };
 
@@ -88,6 +83,15 @@ export function PositionFormModal({
             </select>
           </label>
           <label className={`${styles.formField} ${styles.formFieldFull}`}>
+            <span>核心职责 *</span>
+            <textarea
+              value={coreDuties}
+              onChange={(e) => setCoreDuties(e.target.value)}
+              rows={3}
+              placeholder="可换行填写，如：需求分析、产品规划"
+            />
+          </label>
+          <label className={`${styles.formField} ${styles.formFieldFull}`}>
             <span>岗位职责详细介绍</span>
             <textarea
               value={detailDuty}
@@ -96,82 +100,15 @@ export function PositionFormModal({
               placeholder="每条职责可换行填写"
             />
           </label>
-        </div>
-
-        <div className={styles.dutyEditor}>
-          <div className={styles.dutyEditorHead}>
-            <span>核心职责 *</span>
-            <Button variant="text" onClick={() => setCoreDuties((d) => [...d, ''])}>
-              + 添加职责
-            </Button>
-          </div>
-          {coreDuties.map((duty, index) => (
-            <div key={index} className={styles.dutyRow}>
-              <input
-                placeholder="如：需求分析"
-                value={duty}
-                onChange={(e) => {
-                  const next = [...coreDuties];
-                  next[index] = e.target.value;
-                  setCoreDuties(next);
-                }}
-              />
-              {coreDuties.length > 1 && (
-                <Button variant="danger" onClick={() => setCoreDuties((d) => d.filter((_, i) => i !== index))}>
-                  删除
-                </Button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.kpiEditor}>
-          <div className={styles.kpiEditorHead}>
+          <label className={`${styles.formField} ${styles.formFieldFull}`}>
             <span>岗位绩效指标</span>
-            <Button variant="text" onClick={() => setKpis((k) => [...k, emptyKpi()])}>
-              + 添加指标
-            </Button>
-          </div>
-          {kpis.map((kpi, index) => (
-            <div key={index} className={styles.kpiRow}>
-              <input
-                placeholder="指标名称"
-                value={kpi.name}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], name: e.target.value };
-                  setKpis(next);
-                }}
-              />
-              <input
-                placeholder="目标值"
-                value={kpi.target}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], target: e.target.value };
-                  setKpis(next);
-                }}
-              />
-              <select
-                value={kpi.period}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], period: e.target.value };
-                  setKpis(next);
-                }}
-              >
-                <option value="月度">月度</option>
-                <option value="季度">季度</option>
-                <option value="半年度">半年度</option>
-                <option value="年度">年度</option>
-              </select>
-              {kpis.length > 1 && (
-                <Button variant="danger" onClick={() => setKpis((k) => k.filter((_, i) => i !== index))}>
-                  删除
-                </Button>
-              )}
-            </div>
-          ))}
+            <textarea
+              value={performanceIndicators}
+              onChange={(e) => setPerformanceIndicators(e.target.value)}
+              rows={3}
+              placeholder="选填，可简要填写本岗位绩效指标或考核要点"
+            />
+          </label>
         </div>
 
         <div className={styles.modalActions}>

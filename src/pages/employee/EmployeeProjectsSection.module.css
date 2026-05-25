@@ -57,7 +57,13 @@
   white-space: nowrap;
 }
 
-.dateCell {
+.cellNowrap {
   white-space: nowrap;
-  color: var(--color-text-secondary);
+}
+
+.cellEllipsis {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

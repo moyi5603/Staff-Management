@@ -1,4 +1,5 @@
 import type { Employee, Project, ProjectMemberRole } from '../types';
+import { formatProjectMemberNames } from './projectDisplay';
 
 export function employeeProjectRef(
   project: Project,
@@ -9,6 +10,11 @@ export function employeeProjectRef(
     projectName: project.name,
     role,
     status: project.status,
+    level: project.level,
+    priority: project.priority,
+    departmentName: project.departmentName,
+    leaderName: project.leaderName,
+    membersSummary: formatProjectMemberNames(project.members),
     startDate: project.startDate,
     endDate: project.endDate,
   };

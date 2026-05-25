@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { employees } from '../../mock/data';
-import type { Department, DepartmentKpi, DepartmentStatus } from '../../types';
+import type { Department, DepartmentStatus } from '../../types';
 import styles from './DepartmentList.module.css';
 
 export interface DepartmentFormValues {
@@ -13,7 +13,7 @@ export interface DepartmentFormValues {
   culture: string;
   functionDetail: string;
   status: DepartmentStatus;
-  kpis: DepartmentKpi[];
+  performanceIndicators: string;
 }
 
 interface Props {
@@ -25,8 +25,6 @@ interface Props {
   onSave: (values: DepartmentFormValues) => void;
   onClose: () => void;
 }
-
-const emptyKpi = (): DepartmentKpi => ({ name: '', target: '', period: '季度' });
 
 export function DepartmentFormModal({
   title,
@@ -45,8 +43,8 @@ export function DepartmentFormModal({
   const [culture, setCulture] = useState(initial?.culture ?? '');
   const [functionDetail, setFunctionDetail] = useState(initial?.functionDetail ?? '');
   const [status, setStatus] = useState<DepartmentStatus>(initial?.status ?? '正常');
-  const [kpis, setKpis] = useState<DepartmentKpi[]>(
-    initial?.kpis?.length ? initial.kpis.map((k) => ({ ...k })) : [emptyKpi()],
+  const [performanceIndicators, setPerformanceIndicators] = useState(
+    initial?.performanceIndicators ?? '',
   );
   const [error, setError] = useState('');
 
@@ -68,7 +66,7 @@ export function DepartmentFormModal({
       culture: culture.trim(),
       functionDetail: functionDetail.trim(),
       status,
-      kpis: kpis.filter((k) => k.name.trim()),
+      performanceIndicators: performanceIndicators.trim(),
     });
   };
 
@@ -148,55 +146,15 @@ export function DepartmentFormModal({
               placeholder="每条职责可换行填写"
             />
           </label>
-        </div>
-
-        <div className={styles.kpiEditor}>
-          <div className={styles.kpiEditorHead}>
+          <label className={`${styles.formField} ${styles.formFieldFull}`}>
             <span>部门绩效指标</span>
-            <Button variant="text" onClick={() => setKpis((k) => [...k, emptyKpi()])}>
-              + 添加指标
-            </Button>
-          </div>
-          {kpis.map((kpi, index) => (
-            <div key={index} className={styles.kpiRow}>
-              <input
-                placeholder="指标名称"
-                value={kpi.name}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], name: e.target.value };
-                  setKpis(next);
-                }}
-              />
-              <input
-                placeholder="目标值"
-                value={kpi.target}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], target: e.target.value };
-                  setKpis(next);
-                }}
-              />
-              <select
-                value={kpi.period}
-                onChange={(e) => {
-                  const next = [...kpis];
-                  next[index] = { ...next[index], period: e.target.value };
-                  setKpis(next);
-                }}
-              >
-                <option value="月度">月度</option>
-                <option value="季度">季度</option>
-                <option value="半年度">半年度</option>
-                <option value="年度">年度</option>
-              </select>
-              {kpis.length > 1 && (
-                <Button variant="danger" onClick={() => setKpis((k) => k.filter((_, i) => i !== index))}>
-                  删除
-                </Button>
-              )}
-            </div>
-          ))}
+            <textarea
+              value={performanceIndicators}
+              onChange={(e) => setPerformanceIndicators(e.target.value)}
+              rows={3}
+              placeholder="选填，可简要填写本部门绩效指标或考核要点"
+            />
+          </label>
         </div>
 
         <div className={styles.modalActions}>

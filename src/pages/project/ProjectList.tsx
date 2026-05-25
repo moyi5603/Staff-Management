@@ -17,6 +17,7 @@ import {
   hasActiveProjectFilters,
   type ProjectListFilters,
 } from '../../utils/projectFilters';
+import { formatProjectMemberNames } from '../../utils/projectDisplay';
 import styles from './ProjectList.module.css';
 import toastStyles from '../position/PositionList.module.css';
 
@@ -24,13 +25,6 @@ const STATUS_TABS = ['全部', '未启动', '进行中', '已结束'] as const;
 type StatusTab = (typeof STATUS_TABS)[number];
 
 type FormModalState = { type: 'create' } | { type: 'edit'; project: Project };
-
-function formatMemberNames(members: Project['members'], max = 3): string {
-  if (members.length === 0) return '—';
-  const names = members.map((m) => m.name);
-  if (names.length <= max) return names.join('、');
-  return `${names.slice(0, max).join('、')} 等${names.length}人`;
-}
 
 function buildProject(
   values: ProjectFormValues,
@@ -273,7 +267,7 @@ export function ProjectList() {
                       className={styles.cellEllipsis}
                       title={p.members.map((m) => m.name).join('、') || undefined}
                     >
-                      {formatMemberNames(p.members)}
+                      {formatProjectMemberNames(p.members)}
                     </td>
                     <td className={styles.cellNowrap}>{p.startDate}</td>
                     <td className={styles.cellNowrap}>{p.endDate ?? '—'}</td>

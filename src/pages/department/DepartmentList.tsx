@@ -18,7 +18,6 @@ import {
   type DropPosition,
 } from '../../utils/departmentTree';
 import { DepartmentFormModal, type DepartmentFormValues } from './DepartmentFormModal';
-import { DepartmentImportModal } from './DepartmentImportModal';
 import styles from './DepartmentList.module.css';
 
 interface DropHint {
@@ -40,7 +39,6 @@ export function DepartmentList() {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dropHint, setDropHint] = useState<DropHint | null>(null);
   const [formModal, setFormModal] = useState<FormModalState | null>(null);
-  const [showImport, setShowImport] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Department | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -95,7 +93,7 @@ export function DepartmentList() {
           culture: values.culture || undefined,
           functionDetail: values.functionDetail || undefined,
           status: values.status,
-          kpis: values.kpis.length ? values.kpis : undefined,
+          performanceIndicators: values.performanceIndicators || undefined,
         }),
       );
       showToastMsg('部门信息已保存');
@@ -110,7 +108,7 @@ export function DepartmentList() {
           culture: values.culture || undefined,
           functionDetail: values.functionDetail || undefined,
           status: values.status,
-          kpis: values.kpis.length ? values.kpis : undefined,
+          performanceIndicators: values.performanceIndicators || undefined,
           employeeCount: 0,
         });
         const created = flattenDepartmentTree(next).find(
@@ -123,43 +121,6 @@ export function DepartmentList() {
       showToastMsg('部门已创建');
     }
     setFormModal(null);
-  };
-
-  const handleImport = () => {
-    if (flatDepts.some((d) => d.name === '市场部')) {
-      showToastMsg('导入数据已存在，请勿重复导入');
-      setShowImport(false);
-      return;
-    }
-    setTree((prev) => {
-      let next = addDepartment(prev, ROOT_DEPARTMENT_ID, {
-        name: '市场部',
-        email: 'marketing@company.com',
-        status: '正常',
-        employeeCount: 0,
-        description: '负责市场推广与品牌建设。',
-      });
-      const market = flattenDepartmentTree(next).find((d) => d.name === '市场部');
-      if (market) {
-        next = addDepartment(next, market.id, {
-          name: '品牌组',
-          email: 'brand@company.com',
-          status: '正常',
-          employeeCount: 0,
-        });
-        next = addDepartment(next, market.id, {
-          name: '渠道组',
-          email: 'channel@company.com',
-          status: '正常',
-          employeeCount: 0,
-        });
-        setExpandedIds((ids) => new Set([...ids, ROOT_DEPARTMENT_ID, market.id]));
-        setSelectedId(market.id);
-      }
-      return next;
-    });
-    setShowImport(false);
-    showToastMsg('成功导入 3 个部门');
   };
 
   const confirmDelete = () => {
@@ -226,14 +187,9 @@ export function DepartmentList() {
       <PageHeader
         title="部门管理"
         actions={
-          <>
-            <Button variant="primary" onClick={() => setFormModal({ type: 'create', parentId: ROOT_DEPARTMENT_ID })}>
-              + 新增部门
-            </Button>
-            <Button variant="default" onClick={() => setShowImport(true)}>
-              + 导入部门
-            </Button>
-          </>
+          <Button variant="primary" onClick={() => setFormModal({ type: 'create', parentId: ROOT_DEPARTMENT_ID })}>
+            + 新增部门
+          </Button>
         }
       />
 
@@ -294,30 +250,7 @@ export function DepartmentList() {
                 <dt>部门职能详细介绍</dt>
                 <dd className={styles.textBlock}>{selected.functionDetail ?? '—'}</dd>
                 <dt>部门绩效指标</dt>
-                <dd>
-                  {selected.kpis && selected.kpis.length > 0 ? (
-                    <table className={styles.kpiTable}>
-                      <thead>
-                        <tr>
-                          <th>指标名称</th>
-                          <th>目标值</th>
-                          <th>衡量周期</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selected.kpis.map((kpi) => (
-                          <tr key={kpi.name}>
-                            <td>{kpi.name}</td>
-                            <td>{kpi.target}</td>
-                            <td>{kpi.period}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    '—'
-                  )}
-                </dd>
+                <dd className={styles.textBlock}>{selected.performanceIndicators ?? '—'}</dd>
                 <dt>状态</dt>
                 <dd>
                   <StatusBadge status={selected.status} />
@@ -364,7 +297,6 @@ export function DepartmentList() {
         />
       )}
 
-      {showImport && <DepartmentImportModal onClose={() => setShowImport(false)} onImported={handleImport} />}
 
       {deleteTarget && (
         <div className={styles.modalOverlay} onClick={() => setDeleteTarget(null)}>

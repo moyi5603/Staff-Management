@@ -1,7 +1,5 @@
 import type { CatalogCategory } from './catalogTypes';
 
-export const SKILL_TAG_PICKER_MAX = 10;
-
 /** 技能标签库：分类 → 分组 → 标签名称 */
 export const SKILL_TAG_CATALOG: CatalogCategory[] = [
   {

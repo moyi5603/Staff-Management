@@ -166,7 +166,7 @@ export function addDepartment(
     description: dept.description,
     culture: dept.culture,
     functionDetail: dept.functionDetail,
-    kpis: dept.kpis,
+    performanceIndicators: dept.performanceIndicators,
     status: dept.status ?? '正常',
     employeeCount: dept.employeeCount ?? 0,
     children: [],

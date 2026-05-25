@@ -6,7 +6,8 @@ import styles from './CatalogTagPickerModal.module.css';
 
 interface Props {
   title: string;
-  maxCount: number;
+  /** 不传则不限制数量 */
+  maxCount?: number;
   catalog: CatalogCategory[];
   existingNames: string[];
   inputPlaceholder?: string;
@@ -39,7 +40,7 @@ export function CatalogTagPickerModal({
   const pendingLower = useMemo(() => new Set(pending.map((n) => n.toLowerCase())), [pending]);
 
   const totalCount = existingNames.length + pending.length;
-  const atLimit = totalCount >= maxCount;
+  const atLimit = maxCount !== undefined && totalCount >= maxCount;
 
   const activeCategory = useMemo(
     () => catalog.find((c) => c.id === activeCategoryId) ?? catalog[0],
@@ -149,9 +150,11 @@ export function CatalogTagPickerModal({
               )}
             </div>
             <div className={styles.toolbarActions}>
-              <span className={styles.counter}>
-                {totalCount}/{maxCount}
-              </span>
+              {maxCount !== undefined && (
+                <span className={styles.counter}>
+                  {totalCount}/{maxCount}
+                </span>
+              )}
               <Button variant="primary" onClick={handleConfirm}>
                 确定
               </Button>

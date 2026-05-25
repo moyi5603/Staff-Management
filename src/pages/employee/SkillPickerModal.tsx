@@ -1,6 +1,5 @@
 import { CatalogTagPickerModal } from '../../components/CatalogTagPickerModal';
 import { useTagCatalog } from '../../context/TagCatalogContext';
-import { SKILL_TAG_PICKER_MAX } from '../../data/skillTagCatalog';
 import { labelForEmployeeTag } from '../../utils/tagLabel';
 
 interface Props {
@@ -20,7 +19,6 @@ export function SkillPickerModal({ existingNames, onConfirm, onClose }: Props) {
   return (
     <CatalogTagPickerModal
       title="专业技能"
-      maxCount={SKILL_TAG_PICKER_MAX}
       catalog={skillCatalog}
       existingNames={existingNames}
       inputPlaceholder="请输入技能名称，回车添加自定义（不入标签库）"

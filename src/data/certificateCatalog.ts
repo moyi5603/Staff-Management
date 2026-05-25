@@ -4,23 +4,7 @@ import type { CatalogCategory } from './catalogTypes';
 
 export type { CatalogCategory, CatalogGroup } from './catalogTypes';
 
-export const CERTIFICATE_PICKER_MAX = 30;
-
 export const CERTIFICATE_CATALOG: CatalogCategory[] = [
-  {
-    id: 'recommend',
-    name: '推荐证书',
-    groups: [
-      {
-        title: '项目管理',
-        items: ['PMP 项目管理专业人士', 'PRINCE2 从业者', '信息系统项目管理师'],
-      },
-      {
-        title: '语言',
-        items: ['大学英语四级', '大学英语六级', '雅思 6.5+', '托福 90+'],
-      },
-    ],
-  },
   {
     id: 'pm',
     name: '项目管理',

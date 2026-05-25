@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { StatusBadge } from '../../components/StatusBadge';
-import { TagPill } from '../../components/TagPill';
 import { useEmployees } from '../../context/EmployeeContext';
 import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
 import { EmployeeInterestsSection } from './EmployeeInterestsSection';
@@ -96,20 +95,7 @@ function renderTab(tab: string, emp: Employee) {
     case '个人证书':
       return <EmployeeCertificatesSection certificates={emp.certificates} readOnly />;
     case '兴趣爱好':
-      return (
-        <div>
-          <EmployeeInterestsSection interests={emp.interests} readOnly />
-          {emp.interestGroups.length > 0 && (
-            <Section title="兴趣小组">
-              <div className={styles.interestGrid}>
-                {emp.interestGroups.map((g) => (
-                  <TagPill key={g} label={g} />
-                ))}
-              </div>
-            </Section>
-          )}
-        </div>
-      );
+      return <EmployeeInterestsSection interests={emp.interests} readOnly />;
     case '参与项目':
       return <EmployeeProjectsSection projects={emp.projects} />;
     default:
@@ -160,11 +146,3 @@ function InfoItem({
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className={styles.section}>
-      <h4>{title}</h4>
-      {children}
-    </section>
-  );
-}

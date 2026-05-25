@@ -13,7 +13,6 @@ import positionStyles from './PositionList.module.css';
 type FormModalState = { type: 'create' } | { type: 'edit'; position: Position };
 
 function buildPosition(values: PositionFormValues, deptName: string, existing?: Position): Position {
-  const kpis = values.kpis.length ? values.kpis : undefined;
   return {
     id: existing?.id ?? `pos-${Date.now()}`,
     name: values.name,
@@ -22,8 +21,7 @@ function buildPosition(values: PositionFormValues, deptName: string, existing?: 
     employeeCount: existing?.employeeCount ?? 0,
     coreDuties: values.coreDuties,
     detailDuty: values.detailDuty || undefined,
-    kpis,
-    kpiCount: kpis?.length ?? 0,
+    performanceIndicators: values.performanceIndicators || undefined,
   };
 }
 
@@ -96,7 +94,6 @@ export function PositionList() {
               <th>岗位名称</th>
               <th>所属部门</th>
               <th>员工人数</th>
-              <th>KPI数量</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -107,7 +104,6 @@ export function PositionList() {
                 <td>{p.name}</td>
                 <td>{p.departmentName}</td>
                 <td>{p.employeeCount}人</td>
-                <td>{p.kpiCount}条</td>
                 <td className={styles.ops}>
                   <Button variant="text" onClick={() => setDetailPosition(p)}>
                     详情

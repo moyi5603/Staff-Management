@@ -26,12 +26,6 @@ export type ProjectPriority = '高' | '中' | '低';
 export type DepartmentStatus = '正常' | '已撤销';
 export type ProjectMemberRole = '负责人' | '核心成员' | '一般成员';
 
-export interface DepartmentKpi {
-  name: string;
-  target: string;
-  period: string;
-}
-
 export interface Department {
   id: string;
   name: string;
@@ -41,16 +35,11 @@ export interface Department {
   description?: string;
   culture?: string;
   functionDetail?: string;
-  kpis?: DepartmentKpi[];
+  /** 部门绩效指标（自由文本） */
+  performanceIndicators?: string;
   status: DepartmentStatus;
   employeeCount: number;
   children?: Department[];
-}
-
-export interface PositionKpi {
-  name: string;
-  target: string;
-  period: string;
 }
 
 export interface Position {
@@ -59,10 +48,11 @@ export interface Position {
   departmentId: string;
   departmentName: string;
   employeeCount: number;
-  coreDuties: string[];
+  /** 核心职责（自由文本，可换行） */
+  coreDuties: string;
   detailDuty?: string;
-  kpis?: PositionKpi[];
-  kpiCount: number;
+  /** 岗位绩效指标（自由文本） */
+  performanceIndicators?: string;
 }
 
 export interface Certificate {
@@ -148,8 +138,16 @@ export interface Employee {
   projects: {
     projectId: string;
     projectName: string;
+    /** 该员工在项目中的角色 */
     role: ProjectMemberRole;
     status: ProjectStatus;
+    level: ProjectLevel;
+    priority: ProjectPriority;
+    /** 主责部门 */
+    departmentName: string;
+    leaderName: string;
+    /** 参与人摘要，与项目列表一致 */
+    membersSummary: string;
     startDate: string;
     endDate?: string;
   }[];
