@@ -11,17 +11,17 @@ import type {
 } from '../../types';
 import modalStyles from '../position/PositionList.module.css';
 
+import { MemberSearchCombo } from './MemberSearchCombo';
+import styles from './ProjectList.module.css';
+
 const PROJECT_LEVELS: ProjectLevel[] = ['公司级', '部门级', '团队级'];
 const PROJECT_PRIORITIES: ProjectPriority[] = ['高', '中', '低'];
 const EDITABLE_ROLES: ProjectMemberRole[] = ['核心成员', '一般成员'];
-import { MemberSearchCombo } from './MemberSearchCombo';
-import styles from './ProjectList.module.css';
 
 export interface ProjectFormValues {
   name: string;
   description: string;
   departmentId: string;
-  relatedDepartments: string[];
   leaderId: string;
   status: ProjectStatus;
   level: ProjectLevel;
@@ -35,7 +35,6 @@ interface Props {
   title: string;
   initial?: Project;
   departmentOptions: { id: string; name: string }[];
-  relatedDepartmentNames: string[];
   employeeOptions: Employee[];
   defaultDepartmentId?: string;
   onSave: (values: ProjectFormValues) => void;
@@ -51,7 +50,6 @@ export function ProjectFormModal({
   title,
   initial,
   departmentOptions,
-  relatedDepartmentNames,
   employeeOptions,
   defaultDepartmentId,
   onSave,
@@ -61,9 +59,6 @@ export function ProjectFormModal({
   const [description, setDescription] = useState(initial?.description ?? '');
   const [departmentId, setDepartmentId] = useState(
     initial?.departmentId ?? defaultDepartmentId ?? departmentOptions[0]?.id ?? '',
-  );
-  const [relatedDepartments, setRelatedDepartments] = useState<string[]>(
-    initial?.relatedDepartments ? [...initial.relatedDepartments] : [],
   );
   const [leaderId, setLeaderId] = useState(initial?.leaderId ?? employeeOptions[0]?.id ?? '');
   const [status, setStatus] = useState<ProjectStatus>(initial?.status ?? '未启动');
@@ -84,11 +79,6 @@ export function ProjectFormModal({
     [employeeOptions],
   );
 
-  const primaryDeptName = useMemo(
-    () => departmentOptions.find((d) => d.id === departmentId)?.name ?? '',
-    [departmentOptions, departmentId],
-  );
-
   const leader = useMemo(
     () => activeEmployees.find((e) => e.id === leaderId),
     [activeEmployees, leaderId],
@@ -103,12 +93,6 @@ export function ProjectFormModal({
     const usedIds = new Set(members.map((m) => m.employeeId));
     return activeEmployees.filter((e) => !usedIds.has(e.id));
   }, [activeEmployees, members]);
-
-  const toggleRelatedDept = (deptName: string) => {
-    setRelatedDepartments((prev) =>
-      prev.includes(deptName) ? prev.filter((n) => n !== deptName) : [...prev, deptName],
-    );
-  };
 
   const handleLeaderChange = (id: string) => {
     setLeaderId(id);
@@ -168,7 +152,6 @@ export function ProjectFormModal({
       name: name.trim(),
       description: description.trim(),
       departmentId,
-      relatedDepartments: relatedDepartments.filter((n) => n !== primaryDeptName),
       leaderId,
       status,
       level,
@@ -255,24 +238,6 @@ export function ProjectFormModal({
               placeholder="项目目标与范围说明"
             />
           </label>
-        </div>
-
-        <div className={styles.relatedDepts}>
-          <span className={styles.sectionLabel}>参与部门（可选）</span>
-          <div className={styles.deptChecks}>
-            {relatedDepartmentNames
-              .filter((n) => n !== primaryDeptName)
-              .map((deptName) => (
-                <label key={deptName} className={styles.deptCheck}>
-                  <input
-                    type="checkbox"
-                    checked={relatedDepartments.includes(deptName)}
-                    onChange={() => toggleRelatedDept(deptName)}
-                  />
-                  {deptName}
-                </label>
-              ))}
-          </div>
         </div>
 
         <div className={styles.memberSection}>

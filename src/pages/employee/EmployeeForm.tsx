@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -24,6 +24,9 @@ import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
 import { EmployeeInterestsSection } from './EmployeeInterestsSection';
 import { EmployeeSkillsSection } from './EmployeeSkillsSection';
 import styles from './EmployeeForm.module.css';
+
+const FORM_TABS = ['基础信息', '个人证书', '个人技能', '兴趣爱好'] as const;
+type FormTab = (typeof FORM_TABS)[number];
 
 export function EmployeeForm() {
   const { id } = useParams();
@@ -51,33 +54,40 @@ export function EmployeeForm() {
     workLocationDistrict: emp?.workLocationDistrict ?? '',
   });
   const [joinDate, setJoinDate] = useState(emp?.joinDate ?? new Date().toISOString().slice(0, 10));
+  const [leaveDate, setLeaveDate] = useState(emp?.leaveDate ?? '');
   const [status, setStatus] = useState<EmployeeStatus>(emp?.status ?? '在职');
   const [certificates, setCertificates] = useState<Certificate[]>(
     () => emp?.certificates.map((c) => ({ ...c })) ?? [],
   );
   const [skills, setSkills] = useState<string[]>(() => [...(emp?.skills ?? [])]);
   const [interests, setInterests] = useState<string[]>(() => [...(emp?.interests ?? [])]);
+  const [tab, setTab] = useState<FormTab>('基础信息');
   const [error, setError] = useState('');
 
   const handleSave = () => {
     if (!name.trim()) {
       setError('请填写姓名');
+      setTab('基础信息');
       return;
     }
     if (!empNo.trim()) {
       setError('请填写工号');
+      setTab('基础信息');
       return;
     }
     if (!phone.trim()) {
       setError('请填写手机号');
+      setTab('基础信息');
       return;
     }
     if (!email.trim()) {
       setError('请填写邮箱');
+      setTab('基础信息');
       return;
     }
     if (!isWorkLocationComplete(workLocation)) {
       setError('请选择完整的工作地点（省、市、区/县）');
+      setTab('基础信息');
       return;
     }
 
@@ -103,6 +113,7 @@ export function EmployeeForm() {
       positionName,
       ...workLocation,
       joinDate,
+      leaveDate: leaveDate || undefined,
       status,
       certificates,
       skills,
@@ -149,110 +160,126 @@ export function EmployeeForm() {
 
       {error && <p className={styles.formError}>{error}</p>}
 
-      <Card>
-        <FormSection title="📋 基础信息">
-          <div className={styles.grid}>
-            <Field label="姓名*" value={name} onChange={setName} />
-            <Field label="花名" value={nickname} onChange={setNickname} placeholder="选填" />
-            <Field label="工号*" value={empNo} onChange={setEmpNo} />
-            <Field
-              label="性别"
-              type="select"
-              value={gender}
-              onChange={setGender}
-              options={EMPLOYEE_GENDER_OPTIONS}
-              placeholderOption="请选择"
-            />
-            <Field label="出生日期" type="date" value={birthday} onChange={setBirthday} />
-            <Field
-              label="试用期截止"
-              type="date"
-              value={probationEndDate}
-              onChange={setProbationEndDate}
-            />
-            <Field
-              label="籍贯"
-              value={nativePlace}
-              onChange={setNativePlace}
-              placeholder="如：浙江省杭州市"
-            />
-            <Field
-              label="政治面貌"
-              type="select"
-              value={politicalStatus}
-              onChange={setPoliticalStatus}
-              options={POLITICAL_STATUS_OPTIONS}
-              placeholderOption="请选择"
-            />
-            <Field label="手机号*" value={phone} onChange={setPhone} />
-            <Field label="邮箱*" value={email} onChange={setEmail} />
-            <Field
-              label="部门*"
-              type="select"
-              value={departmentName}
-              onChange={setDepartmentName}
-              options={DEPARTMENT_OPTIONS.map((d) => d.name)}
-            />
-            <Field
-              label="岗位*"
-              type="select"
-              value={positionName}
-              onChange={setPositionName}
-              options={POSITION_OPTIONS.map((p) => p.name)}
-            />
-            <Field label="入职日期*" type="date" value={joinDate} onChange={setJoinDate} />
-            <Field
-              label="状态"
-              type="select"
-              value={status}
-              onChange={(v) => setStatus(v as EmployeeStatus)}
-              options={['在职', '休假', '离职']}
-            />
-            <label className={styles.field}>
-              <span>工作地点 *</span>
-              <WorkLocationPicker value={workLocation} onChange={setWorkLocation} />
-            </label>
-            <Field
-              label="个人介绍"
-              type="textarea"
-              value={bio}
-              onChange={setBio}
-              placeholder="选填，简要介绍工作经历、专长等"
-              className={styles.fieldFull}
-            />
-          </div>
-          <div className={styles.upload}>
-            <span>个人照片</span>
-            <Button variant="default" onClick={() => window.alert('个人照片上传为演示占位')}>
-              上传个人照片
-            </Button>
-            <span className={styles.hint}>JPG/PNG，建议 200×200px，最大 2MB</span>
-          </div>
-        </FormSection>
+      <Card className={styles.formCard}>
+        <div className={styles.tabs} role="tablist">
+          {FORM_TABS.map((t) => (
+            <button
+              key={t}
+              type="button"
+              role="tab"
+              aria-selected={tab === t}
+              className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
+              onClick={() => setTab(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
 
-        <FormSection title="📜 个人证书（选填）">
-          <EmployeeCertificatesSection certificates={certificates} onChange={setCertificates} />
-        </FormSection>
+        <div className={styles.tabPanel} role="tabpanel">
+          {tab === '基础信息' && (
+            <>
+              <div className={styles.grid}>
+                <Field label="姓名*" value={name} onChange={setName} />
+                <Field label="花名" value={nickname} onChange={setNickname} placeholder="选填" />
+                <Field label="工号*" value={empNo} onChange={setEmpNo} />
+                <Field
+                  label="性别"
+                  type="select"
+                  value={gender}
+                  onChange={setGender}
+                  options={EMPLOYEE_GENDER_OPTIONS}
+                  placeholderOption="请选择"
+                />
+                <Field label="出生日期" type="date" value={birthday} onChange={setBirthday} />
+                <Field
+                  label="试用期截止"
+                  type="date"
+                  value={probationEndDate}
+                  onChange={setProbationEndDate}
+                />
+                <Field
+                  label="籍贯"
+                  value={nativePlace}
+                  onChange={setNativePlace}
+                  placeholder="如：浙江省杭州市"
+                />
+                <Field
+                  label="政治面貌"
+                  type="select"
+                  value={politicalStatus}
+                  onChange={setPoliticalStatus}
+                  options={POLITICAL_STATUS_OPTIONS}
+                  placeholderOption="请选择"
+                />
+                <Field label="手机号*" value={phone} onChange={setPhone} />
+                <Field label="邮箱*" value={email} onChange={setEmail} />
+                <Field
+                  label="部门*"
+                  type="select"
+                  value={departmentName}
+                  onChange={setDepartmentName}
+                  options={DEPARTMENT_OPTIONS.map((d) => d.name)}
+                />
+                <Field
+                  label="岗位*"
+                  type="select"
+                  value={positionName}
+                  onChange={setPositionName}
+                  options={POSITION_OPTIONS.map((p) => p.name)}
+                />
+                <Field label="入职日期*" type="date" value={joinDate} onChange={setJoinDate} />
+                <Field
+                  label="状态"
+                  type="select"
+                  value={status}
+                  onChange={(v) => setStatus(v as EmployeeStatus)}
+                  options={['在职', '休假', '离职']}
+                />
+                <Field
+                  label="离职日期"
+                  type="date"
+                  value={leaveDate}
+                  onChange={setLeaveDate}
+                  placeholder={status === '离职' ? '离职时建议填写' : '选填'}
+                />
+                <label className={styles.field}>
+                  <span>工作地点 *</span>
+                  <WorkLocationPicker value={workLocation} onChange={setWorkLocation} />
+                </label>
+                <Field
+                  label="个人介绍"
+                  type="textarea"
+                  value={bio}
+                  onChange={setBio}
+                  placeholder="选填，简要介绍工作经历、专长等"
+                  className={styles.fieldFull}
+                />
+              </div>
+              <div className={styles.upload}>
+                <span>个人照片</span>
+                <Button variant="default" onClick={() => window.alert('个人照片上传为演示占位')}>
+                  上传个人照片
+                </Button>
+                <span className={styles.hint}>JPG/PNG，建议 200×200px，最大 2MB</span>
+              </div>
+            </>
+          )}
 
-        <FormSection title="💡 个人技能（选填）">
-          <EmployeeSkillsSection skills={skills} onChange={setSkills} />
-        </FormSection>
+          {tab === '个人证书' && (
+            <EmployeeCertificatesSection certificates={certificates} onChange={setCertificates} />
+          )}
 
-        <FormSection title="🎯 兴趣爱好（选填）">
-          <EmployeeInterestsSection interests={interests} onChange={setInterests} />
-        </FormSection>
+          {tab === '个人技能' && (
+            <EmployeeSkillsSection skills={skills} onChange={setSkills} />
+          )}
+
+          {tab === '兴趣爱好' && (
+            <EmployeeInterestsSection interests={interests} onChange={setInterests} />
+          )}
+        </div>
       </Card>
     </>
-  );
-}
-
-function FormSection({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className={styles.section}>
-      <h3 className={styles.sectionTitle}>{title}</h3>
-      <hr className={styles.divider} />
-      {children}
-    </section>
   );
 }
 

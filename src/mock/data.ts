@@ -288,7 +288,7 @@ export const employees: Employee[] = [
     id: 'emp-001',
     empNo: 'EMP-00123',
     name: '张三',
-    nickname: '三哥',
+    nickname: 'Lex',
     gender: '男',
     nativePlace: '北京市',
     politicalStatus: '中共党员',

@@ -1,10 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { EmptyState } from '../../components/EmptyState';
 import { PageHeader } from '../../components/PageHeader';
-import { ProjectMetaBadge } from '../../components/ProjectMetaBadge';
-import { StatusBadge } from '../../components/StatusBadge';
 import { useEmployees } from '../../context/EmployeeContext';
 import { useProjects } from '../../context/ProjectContext';
 import { departments } from '../../mock/data';
@@ -27,10 +25,11 @@ type StatusTab = (typeof STATUS_TABS)[number];
 
 type FormModalState = { type: 'create' } | { type: 'edit'; project: Project };
 
-function projectIcon(status: ProjectStatus): string {
-  if (status === '进行中') return '🟢';
-  if (status === '未启动') return '○';
-  return '⬡';
+function formatMemberNames(members: Project['members'], max = 3): string {
+  if (members.length === 0) return '—';
+  const names = members.map((m) => m.name);
+  if (names.length <= max) return names.join('、');
+  return `${names.slice(0, max).join('、')} 等${names.length}人`;
 }
 
 function buildProject(
@@ -45,7 +44,7 @@ function buildProject(
     description: values.description || undefined,
     departmentId: values.departmentId,
     departmentName: deptName,
-    relatedDepartments: values.relatedDepartments,
+    relatedDepartments: existing?.relatedDepartments ?? [],
     leaderId: values.leaderId,
     leaderName,
     members: values.members,
@@ -66,18 +65,26 @@ export function ProjectList() {
   const [formModal, setFormModal] = useState<FormModalState | null>(null);
   const [detailProject, setDetailProject] = useState<Project | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
+  const [endTarget, setEndTarget] = useState<Project | null>(null);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!openMoreId) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (tableRef.current && !tableRef.current.contains(e.target as Node)) {
+        setOpenMoreId(null);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [openMoreId]);
 
   const departmentOptions = useMemo(() => {
     const flat = flattenDepartmentTree(cloneDepartmentTree(departments));
     return flat.filter((d) => d.id !== 'dept-root').map((d) => ({ id: d.id, name: d.name }));
   }, []);
-
-  const relatedDepartmentNames = useMemo(
-    () => departmentOptions.map((d) => d.name),
-    [departmentOptions],
-  );
 
   const deptNameById = useMemo(
     () => new Map(departmentOptions.map((d) => [d.id, d.name])),
@@ -163,6 +170,17 @@ export function ProjectList() {
     showToast(status === '进行中' ? '项目已启动' : '项目已结束');
   };
 
+  const requestEndProject = (project: Project) => {
+    setOpenMoreId(null);
+    setEndTarget(project);
+  };
+
+  const confirmEndProject = () => {
+    if (!endTarget) return;
+    changeStatus(endTarget, '已结束');
+    setEndTarget(null);
+  };
+
   const confirmDelete = () => {
     if (!deleteTarget) return;
     removeProject(deleteTarget.id);
@@ -217,72 +235,112 @@ export function ProjectList() {
           }
         />
       ) : (
-        <div className={styles.cards}>
-          {filtered.map((p) => (
-            <Card key={p.id} className={styles.projectCard}>
-              <div className={styles.cardHead}>
-                <button type="button" className={styles.nameBtn} onClick={() => setDetailProject(p)}>
-                  <strong>
-                    {projectIcon(p.status)} {p.name}
-                  </strong>
-                </button>
-                <div className={styles.cardHeadRight}>
-                  <ProjectMetaBadge label={p.level} />
-                  <ProjectMetaBadge label={p.priority} />
-                  <StatusBadge status={p.status} />
-                  <Button variant="text" onClick={() => openEdit(p)}>
-                    编辑
-                  </Button>
-                  <div className={styles.moreWrap}>
-                    <Button variant="text" onClick={() => setOpenMoreId((id) => (id === p.id ? null : p.id))}>
-                      更多
-                    </Button>
-                    {openMoreId === p.id && (
-                      <div className={styles.moreMenu} role="menu">
-                        <button type="button" onClick={() => { setOpenMoreId(null); setDetailProject(p); }}>
-                          查看详情
-                        </button>
-                        {p.status === '未启动' && (
-                          <button type="button" onClick={() => { setOpenMoreId(null); changeStatus(p, '进行中'); }}>
-                            启动项目
-                          </button>
-                        )}
-                        {p.status === '进行中' && (
-                          <button type="button" onClick={() => { setOpenMoreId(null); changeStatus(p, '已结束'); }}>
-                            结束项目
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          className={styles.dangerItem}
-                          onClick={() => {
-                            setOpenMoreId(null);
-                            setDeleteTarget(p);
-                          }}
+        <Card className={styles.tableCard}>
+          <div className={styles.tableScroll} ref={tableRef}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>项目名称</th>
+                  <th>状态</th>
+                  <th>项目级别</th>
+                  <th>优先级</th>
+                  <th>主责部门</th>
+                  <th>负责人</th>
+                  <th>参与人</th>
+                  <th>开始日期</th>
+                  <th>结束日期</th>
+                  <th style={{ width: 140 }}>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((p, i) => (
+                  <tr key={p.id} className={i % 2 === 1 ? styles.stripe : undefined}>
+                    <td>
+                      <button
+                        type="button"
+                        className={styles.nameBtn}
+                        onClick={() => setDetailProject(p)}
+                      >
+                        {p.name}
+                      </button>
+                    </td>
+                    <td>{p.status}</td>
+                    <td>{p.level}</td>
+                    <td>{p.priority}</td>
+                    <td>{p.departmentName}</td>
+                    <td className={styles.cellNowrap}>{p.leaderName}</td>
+                    <td
+                      className={styles.cellEllipsis}
+                      title={p.members.map((m) => m.name).join('、') || undefined}
+                    >
+                      {formatMemberNames(p.members)}
+                    </td>
+                    <td className={styles.cellNowrap}>{p.startDate}</td>
+                    <td className={styles.cellNowrap}>{p.endDate ?? '—'}</td>
+                    <td className={styles.ops}>
+                      <Button variant="text" onClick={() => openEdit(p)}>
+                        编辑
+                      </Button>
+                      <div className={styles.moreWrap}>
+                        <Button
+                          variant="text"
+                          onClick={() => setOpenMoreId((id) => (id === p.id ? null : p.id))}
                         >
-                          删除
-                        </button>
+                          更多
+                        </Button>
+                        {openMoreId === p.id && (
+                          <div className={styles.moreMenu} role="menu">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenMoreId(null);
+                                setDetailProject(p);
+                              }}
+                            >
+                              查看详情
+                            </button>
+                            {p.status === '未启动' && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setOpenMoreId(null);
+                                  changeStatus(p, '进行中');
+                                }}
+                              >
+                                启动项目
+                              </button>
+                            )}
+                            {p.status === '进行中' && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setOpenMoreId(null);
+                                  requestEndProject(p);
+                                }}
+                              >
+                                结束项目
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className={styles.dangerItem}
+                              onClick={() => {
+                                setOpenMoreId(null);
+                                setDeleteTarget(p);
+                              }}
+                            >
+                              删除
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <p>
-                项目级别：{p.level} | 优先级：{p.priority} | 主责部门：{p.departmentName} | 负责人：
-                {p.leaderName}
-              </p>
-              {p.members.length > 0 && (
-                <p>参与人：{p.members.map((m) => m.name).join('、')}</p>
-              )}
-              {p.relatedDepartments.length > 0 && <p>参与部门：{p.relatedDepartments.join('、')}</p>}
-              <p>
-                开始：{p.startDate}
-                {p.endDate && ` | 结束：${p.endDate}`}
-              </p>
-              {p.description && <p className={styles.desc}>{p.description}</p>}
-            </Card>
-          ))}
-        </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
       {formModal && (
@@ -290,7 +348,6 @@ export function ProjectList() {
           title={formModal.type === 'create' ? '新增项目' : '编辑项目'}
           initial={formModal.type === 'edit' ? formModal.project : undefined}
           departmentOptions={departmentOptions}
-          relatedDepartmentNames={relatedDepartmentNames}
           employeeOptions={employees}
           defaultDepartmentId={departmentOptions[0]?.id}
           onSave={handleSave}
@@ -309,9 +366,7 @@ export function ProjectList() {
               : undefined
           }
           onEnd={
-            detailProject.status === '进行中'
-              ? () => changeStatus(detailProject, '已结束')
-              : undefined
+            detailProject.status === '进行中' ? () => requestEndProject(detailProject) : undefined
           }
           onDelete={() => {
             setDeleteTarget(detailProject);
@@ -319,12 +374,32 @@ export function ProjectList() {
         />
       )}
 
+      {endTarget && (
+        <div className={toastStyles.modalOverlay} onClick={() => setEndTarget(null)}>
+          <div className={toastStyles.modal} onClick={(e) => e.stopPropagation()}>
+            <h3>确认结束项目</h3>
+            <p className={styles.confirmText}>
+              确定结束项目「{endTarget.name}」？结束后将自动记录结束日期（
+              {new Date().toISOString().slice(0, 10)}）。
+            </p>
+            <div className={toastStyles.modalActions}>
+              <Button variant="default" onClick={() => setEndTarget(null)}>
+                取消
+              </Button>
+              <Button variant="primary" onClick={confirmEndProject}>
+                确认结束
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {deleteTarget && (
         <div className={toastStyles.modalOverlay} onClick={() => setDeleteTarget(null)}>
           <div className={toastStyles.modal} onClick={(e) => e.stopPropagation()}>
             <h3>确认删除</h3>
             <p className={styles.confirmText}>
-              确定删除项目「{deleteTarget.name}」？关联员工的项目经验将同步移除（演示数据，刷新页面恢复 Mock）。
+              确定删除项目「{deleteTarget.name}」？关联员工的参与项目将同步移除（演示数据，刷新页面恢复 Mock）。
             </p>
             <div className={toastStyles.modalActions}>
               <Button variant="default" onClick={() => setDeleteTarget(null)}>

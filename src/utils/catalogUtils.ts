@@ -28,3 +28,17 @@ export function flattenCatalogNames(catalog: CatalogCategory[]): string[] {
 export function newCatalogCategoryId(prefix: string) {
   return `${prefix}-${Date.now()}`;
 }
+
+export function moveCatalogCategory(
+  list: CatalogCategory[],
+  categoryId: string,
+  direction: 'up' | 'down',
+): CatalogCategory[] {
+  const index = list.findIndex((c) => c.id === categoryId);
+  if (index < 0) return list;
+  const target = direction === 'up' ? index - 1 : index + 1;
+  if (target < 0 || target >= list.length) return list;
+  const next = [...list];
+  [next[index], next[target]] = [next[target], next[index]];
+  return next;
+}

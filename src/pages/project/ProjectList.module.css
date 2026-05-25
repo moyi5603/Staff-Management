@@ -99,22 +99,43 @@
   gap: 12px;
 }
 
-.cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--card-gap);
+.tableCard {
+  padding: 0;
+  overflow: hidden;
 }
 
-.projectCard {
-  margin: 0;
+.tableScroll {
+  overflow-x: auto;
 }
 
-.cardHead {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 8px;
+.table {
+  width: 100%;
+  font-size: var(--font-table);
+  min-width: 1100px;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: var(--color-bg);
+  font-weight: 500;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table tbody tr:hover td {
+  background: var(--color-table-hover);
+}
+
+.stripe td {
+  background: var(--color-table-stripe);
 }
 
 .nameBtn {
@@ -122,27 +143,32 @@
   background: none;
   padding: 0;
   font: inherit;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
   color: var(--color-text);
 }
 
-.nameBtn:hover strong {
+.nameBtn:hover {
   color: var(--color-primary);
 }
 
-.cardHeadRight {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+.cellNowrap {
+  white-space: nowrap;
 }
 
-.desc {
-  color: var(--color-text-secondary);
-  font-size: var(--font-helper);
+.cellEllipsis {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ops {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .moreWrap {

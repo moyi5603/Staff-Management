@@ -1,13 +1,14 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { CERTIFICATE_CATALOG as initialCatalog } from '../data/certificateCatalog';
 import type { CatalogCategory } from '../data/catalogTypes';
-import { cloneCatalog, newCatalogCategoryId } from '../utils/catalogUtils';
+import { cloneCatalog, moveCatalogCategory, newCatalogCategoryId } from '../utils/catalogUtils';
 
 interface CertificateCatalogContextValue {
   catalog: CatalogCategory[];
   addCategory: (name: string) => string;
   updateCategory: (id: string, name: string) => void;
   removeCategory: (id: string) => void;
+  moveCategory: (id: string, direction: 'up' | 'down') => void;
   addGroup: (categoryId: string, title: string) => void;
   updateGroup: (categoryId: string, groupIndex: number, title: string) => void;
   removeGroup: (categoryId: string, groupIndex: number) => void;
@@ -43,6 +44,10 @@ export function CertificateCatalogProvider({ children }: { children: ReactNode }
 
   const removeCategory = useCallback((id: string) => {
     setCatalog((prev) => prev.filter((c) => c.id !== id));
+  }, []);
+
+  const moveCategory = useCallback((id: string, direction: 'up' | 'down') => {
+    setCatalog((prev) => moveCatalogCategory(prev, id, direction));
   }, []);
 
   const addGroup = useCallback(
@@ -111,6 +116,7 @@ export function CertificateCatalogProvider({ children }: { children: ReactNode }
       addCategory,
       updateCategory,
       removeCategory,
+      moveCategory,
       addGroup,
       updateGroup,
       removeGroup,
@@ -122,6 +128,7 @@ export function CertificateCatalogProvider({ children }: { children: ReactNode }
       addCategory,
       updateCategory,
       removeCategory,
+      moveCategory,
       addGroup,
       updateGroup,
       removeGroup,

@@ -85,9 +85,9 @@ function getBreadcrumb(pathname: string): string[] {
   if (pathname.startsWith('/employee')) return ['企业管理', '员工管理'];
   if (pathname.startsWith('/department')) return ['企业管理', '部门管理'];
   if (pathname.startsWith('/position')) return ['企业管理', '岗位管理'];
-  if (pathname.startsWith('/certificate')) return ['企业管理', '证书管理'];
   if (pathname.startsWith('/project')) return ['项目管理', '项目列表'];
   if (pathname.startsWith('/duty')) return ['值班管理', '值班日历'];
+  if (pathname.startsWith('/certificate')) return ['标签中心', '证书管理'];
   if (pathname.startsWith('/tag/skill')) return ['标签中心', '技能标签管理'];
   if (pathname.startsWith('/tag/interest')) return ['标签中心', '兴趣标签管理'];
   return [];

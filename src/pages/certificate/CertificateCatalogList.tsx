@@ -11,7 +11,9 @@ export function CertificateCatalogList() {
         summaryLine: (c, n) =>
           `维护员工「个人证书」选择弹窗中的分类与证书名称，共 ${c} 个分类、${n} 条证书名称。`,
         sidebarTitle: '证书分类',
-        newCategoryPrompt: '请输入证书分类名称',
+        newCategoryPrompt: '如：项目管理、语言类',
+        newCategoryLabel: '分类名称',
+        newGroupLabel: '分组名称',
         deleteCategoryConfirm: (name) =>
           `确定删除分类「${name}」及其下全部分组与证书名称？`,
         searchPlaceholder: '搜索分组或证书名称...',
@@ -26,6 +28,7 @@ export function CertificateCatalogList() {
         addCategory: api.addCategory,
         updateCategory: api.updateCategory,
         removeCategory: api.removeCategory,
+        moveCategory: api.moveCategory,
         addGroup: api.addGroup,
         updateGroup: api.updateGroup,
         removeGroup: api.removeGroup,

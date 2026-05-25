@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -47,6 +47,19 @@ export function EmployeeList() {
   const [batchDept, setBatchDept] = useState<string>(DEPARTMENT_OPTIONS[0].name);
   const [batchStatus, setBatchStatus] = useState<EmployeeStatus>('在职');
   const [toast, setToast] = useState<string | null>(null);
+  const [openMoreId, setOpenMoreId] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!openMoreId) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (tableRef.current && !tableRef.current.contains(e.target as Node)) {
+        setOpenMoreId(null);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [openMoreId]);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -220,7 +233,7 @@ export function EmployeeList() {
             没有匹配的员工，请调整筛选条件
           </p>
         ) : (
-          <div className={styles.tableScroll}>
+          <div className={styles.tableScroll} ref={tableRef}>
             <table className={styles.table}>
               <thead>
                 <tr>
@@ -254,6 +267,11 @@ export function EmployeeList() {
                     stripe={i % 2 === 1}
                     checked={selected.has(emp.id)}
                     onToggle={() => toggleOne(emp.id)}
+                    moreOpen={openMoreId === emp.id}
+                    onMoreToggle={() =>
+                      setOpenMoreId((id) => (id === emp.id ? null : emp.id))
+                    }
+                    onMoreClose={() => setOpenMoreId(null)}
                     onAccountChange={(status: AccountStatus) => {
                       updateEmployee(emp.id, { accountStatus: status });
                       showToast(
@@ -377,12 +395,18 @@ function EmployeeRow({
   stripe,
   checked,
   onToggle,
+  moreOpen,
+  onMoreToggle,
+  onMoreClose,
   onAccountChange,
 }: {
   emp: Employee;
   stripe: boolean;
   checked: boolean;
   onToggle: () => void;
+  moreOpen: boolean;
+  onMoreToggle: () => void;
+  onMoreClose: () => void;
   onAccountChange: (status: AccountStatus) => void;
 }) {
   const accountEnabled = emp.accountStatus === '正常';
@@ -418,9 +442,16 @@ function EmployeeRow({
           <Button variant="text">修改</Button>
         </Link>
         <div className={styles.moreWrap}>
-          <Button variant="text" type="button">
+          <Button variant="text" type="button" onClick={onMoreToggle}>
             更多
           </Button>
+          {moreOpen && (
+            <div className={styles.moreMenu} role="menu">
+              <Link to={`/employee/detail/${emp.id}`} onClick={onMoreClose}>
+                查看详情
+              </Link>
+            </div>
+          )}
         </div>
       </td>
     </tr>

@@ -12,7 +12,7 @@ export function employeeProjectRef(
   };
 }
 
-/** 保存项目后，同步各员工「项目经验」中的引用 */
+/** 保存项目后，同步各员工「参与项目」中的引用 */
 export function syncEmployeesAfterProjectSave(
   employees: Employee[],
   project: Project,

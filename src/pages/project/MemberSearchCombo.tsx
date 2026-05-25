@@ -20,15 +20,7 @@ export function MemberSearchCombo({ availableEmployees, disabled, onAdd }: Props
   const filtered = useMemo(() => {
     const q = query.trim();
     if (!q) return availableEmployees.slice(0, 12);
-    const lower = q.toLowerCase();
-    return availableEmployees
-      .filter(
-        (e) =>
-          e.name.includes(q) ||
-          e.empNo.toLowerCase().includes(lower) ||
-          e.departmentName.includes(q),
-      )
-      .slice(0, 12);
+    return availableEmployees.filter((e) => e.name.includes(q)).slice(0, 12);
   }, [query, availableEmployees]);
 
   const exactEmployee = useMemo(() => {
@@ -98,7 +90,7 @@ export function MemberSearchCombo({ availableEmployees, disabled, onAdd }: Props
       >
         <input
           className={styles.memberAddInput}
-          placeholder="搜索姓名、工号、部门，或直接输入姓名后添加"
+          placeholder="输入姓名搜索并添加成员"
           value={query}
           disabled={disabled}
           onChange={(e) => {

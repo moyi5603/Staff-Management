@@ -2,7 +2,12 @@ import { createContext, useCallback, useContext, useMemo, useState, type ReactNo
 import type { CatalogCategory } from '../data/catalogTypes';
 import { INTEREST_TAG_CATALOG } from '../data/interestTagCatalog';
 import { SKILL_TAG_CATALOG } from '../data/skillTagCatalog';
-import { cloneCatalog, flattenCatalogNames, newCatalogCategoryId } from '../utils/catalogUtils';
+import {
+  cloneCatalog,
+  flattenCatalogNames,
+  moveCatalogCategory,
+  newCatalogCategoryId,
+} from '../utils/catalogUtils';
 
 export type TagCatalogKind = 'skill' | 'interest';
 
@@ -15,6 +20,7 @@ interface TagCatalogContextValue {
   addCategory: (kind: TagCatalogKind, name: string) => string;
   updateCategory: (kind: TagCatalogKind, id: string, name: string) => void;
   removeCategory: (kind: TagCatalogKind, id: string) => void;
+  moveCategory: (kind: TagCatalogKind, id: string, direction: 'up' | 'down') => void;
   addGroup: (kind: TagCatalogKind, categoryId: string, title: string) => void;
   updateGroup: (kind: TagCatalogKind, categoryId: string, groupIndex: number, title: string) => void;
   removeGroup: (kind: TagCatalogKind, categoryId: string, groupIndex: number) => void;
@@ -79,6 +85,13 @@ export function TagCatalogProvider({ children }: { children: ReactNode }) {
         kind,
         getCatalog(kind).filter((c) => c.id !== id),
       );
+    },
+    [getCatalog, setCatalog],
+  );
+
+  const moveCategory = useCallback(
+    (kind: TagCatalogKind, id: string, direction: 'up' | 'down') => {
+      setCatalog(kind, moveCatalogCategory(getCatalog(kind), id, direction));
     },
     [getCatalog, setCatalog],
   );
@@ -171,6 +184,7 @@ export function TagCatalogProvider({ children }: { children: ReactNode }) {
       addCategory,
       updateCategory,
       removeCategory,
+      moveCategory,
       addGroup,
       updateGroup,
       removeGroup,
@@ -186,6 +200,7 @@ export function TagCatalogProvider({ children }: { children: ReactNode }) {
       addCategory,
       updateCategory,
       removeCategory,
+      moveCategory,
       addGroup,
       updateGroup,
       removeGroup,
@@ -212,6 +227,7 @@ export function useTagCatalogKind(kind: TagCatalogKind) {
       addCategory: (name: string) => ctx.addCategory(kind, name),
       updateCategory: (id: string, name: string) => ctx.updateCategory(kind, id, name),
       removeCategory: (id: string) => ctx.removeCategory(kind, id),
+      moveCategory: (id: string, direction: 'up' | 'down') => ctx.moveCategory(kind, id, direction),
       addGroup: (categoryId: string, title: string) => ctx.addGroup(kind, categoryId, title),
       updateGroup: (categoryId: string, groupIndex: number, title: string) =>
         ctx.updateGroup(kind, categoryId, groupIndex, title),

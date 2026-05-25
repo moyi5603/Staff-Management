@@ -84,9 +84,9 @@ Staff-Management/
 | 员工表单 | `/employee/form`、`/employee/form/:id` | `EmployeeForm` |
 | 部门管理 | `/department/list` | `DepartmentList` |
 | 岗位管理 | `/position/list` | `PositionList` |
-| 证书管理 | `/certificate/list` | `CertificateCatalogList` |
 | 项目列表 | `/project/list` | `ProjectList` |
 | 值班日历 | `/duty/calendar` | `DutyCalendar` |
+| 证书管理 | `/certificate/list` | `CertificateCatalogList` |
 | 技能标签管理 | `/tag/skill` | `TagCatalogList(mode=skill)` |
 | 兴趣标签管理 | `/tag/interest` | `TagCatalogList(mode=interest)` |
 
@@ -122,7 +122,7 @@ Staff-Management/
 - 左侧：与部门管理同源的组织树（搜索部门名、展开/收起），点击节点筛选该部门及子部门员工；「全部员工」取消部门筛选
 - 筛选区（与产品设计图一致，点击「搜索」生效）：员工姓名/工号/邮箱/电话 + 关键词、在职状态、账号状态、创建时间区间、生日区间、司龄；「重置」清空条件；左侧部门树筛选仍即时生效
 - 员工字段：`accountStatus`、`createdAt`、`birthday`、`probationEndDate`、`wechatBound`、`lastLoginAt`、`workLocationProvince/City/District`；司龄按 `joinDate` 计算
-- 列表列：员工姓名、工号、员工生日、入职时间、部门、手机号码、邮箱、试用截止、是否绑定微信小程序、最近登录时间、在职状态、账号状态（行内开关）、操作（修改 / 更多）
+- 列表列：员工姓名、工号、员工生日、入职时间、部门、手机号码、邮箱、试用截止、是否绑定微信小程序、最近登录时间、在职状态、账号状态（行内开关）、操作（修改 / 更多：查看详情）
 - **导出**：按当前筛选结果导出 CSV（列与列表一致，不含岗位）
 - **删除**：行内删除 / 批量删除（确认弹窗）
 - **批量操作**：批量改部门、批量改状态
@@ -132,12 +132,12 @@ Staff-Management/
 
 ### 6.1.1 员工表单
 
-- 新增/编辑基础字段校验与保存；基础信息含花名、性别、出生日期、试用期截止、籍贯、政治面貌、个人介绍（选填）及工作地点（单控件省 / 市 / 区级联选择 `WorkLocationPicker`）；保存后跳转详情
-- 个人照片为演示占位；个人技能、个人证书、兴趣爱好支持列表增删改（`EmployeeSkillsSection`、`EmployeeCertificatesSection`、`EmployeeInterestsSection`）
+- 新增/编辑采用 Tab：基础信息 / 个人证书 / 个人技能 / 兴趣爱好；编辑页含姓名、花名等可改字段；详情档案网格与编辑对齐，但**不重复**展示姓名/花名（顶部标题已含）、**不展示**手机尾号（保存时仍由手机号自动生成 `phoneSuffix` 供检索）；保存后跳转详情
+- 编辑页「个人照片」为演示占位，详情档案不展示；各 Tab 内支持列表增删改（`EmployeeSkillsSection`、`EmployeeCertificatesSection`、`EmployeeInterestsSection`）；校验失败时自动切回「基础信息」Tab
 
 ### 6.2 员工详情（Story 3 对齐）
 
-- Tab：基础信息 / 个人证书 / 个人技能 / 项目经验 / 个人荣誉 / 兴趣爱好 / 操作日志
+- 顶部档案卡片融合摘要与基础信息（头像 + 姓名/状态 + 字段网格）；Tab：个人证书 / 个人技能 / 参与项目 / 兴趣爱好
 - 手机号脱敏展示
 - 个人技能：分类标签选择弹窗（`SkillPickerModal` + `TagCatalogContext.skillCatalog`，左分类右标签云，仿 BOSS 专业技能）；数据与「技能标签管理」页同源；自定义仅写入员工档案；最多 10 项
 - 个人证书：添加采用分类标签选择弹窗（数据来自 `CertificateCatalogContext`，与「证书管理」页同步，仿 BOSS 资格证书选择）；卡片上「编辑」补充发证/到期日期；最多 30 本
@@ -155,7 +155,7 @@ Staff-Management/
 
 ### 6.4 证书管理
 
-- 路由：`/certificate/list`；菜单：企业管理 → **证书管理**
+- 路由：`/certificate/list`；菜单：标签中心 → **证书管理**
 - 维护证书**分类**（左侧导航）、**分组**与**证书名称**（右侧标签云）；支持搜索
 - 内存状态 `CertificateCatalogProvider`，与员工「添加证书」弹窗实时同步（刷新页面恢复 `certificateCatalog` 初始 Mock）
 - 操作：新增/编辑/删除分类；新增/编辑/删除分组；添加/删除证书名称
@@ -180,13 +180,14 @@ Staff-Management/
 - 单页「项目列表」；侧栏仅保留一个入口（已移除「项目归档」）
 - 顶部 Tab：全部 / 未启动 / 进行中 / 已结束（含数量角标）
 - 搜索：项目名称、主负责部门、负责人、参与人（分字段输入，点击「搜索」生效）
-- **项目级别**：公司级 / 部门级 / 团队级（列表卡片徽标、详情、新增/编辑表单，默认部门级）
+- **项目级别**：公司级 / 部门级 / 团队级（列表表格徽标、详情、新增/编辑表单，默认部门级）
 - **项目优先级**：高 / 中 / 低（同上，默认中）
-- **新增/编辑**：弹窗表单（级别、优先级、主责部门、负责人、状态、日期、简介、参与部门、成员与角色）
+- **列表展示**：表格列（项目名称、状态、级别、优先级、主责部门、负责人、参与人、开始/结束日期、操作）；状态/级别/优先级为纯文本，无标签样式
+- **新增/编辑**：弹窗表单（级别、优先级、主责部门、负责人、状态、日期、简介、成员与角色）；不含参与部门
 - **详情**：只读弹窗；可启动/结束/编辑/删除
-- **状态流转**：未启动 → 进行中（启动）；进行中 → 已结束（自动填结束日期）
-- **删除**：确认后移除项目，并同步员工详情「项目经验」引用（`ProjectContext` + `EmployeeContext`）
-- 卡片展示负责人、成员头像组；`EmployeeProvider` 内嵌 `ProjectProvider`
+- **状态流转**：未启动 → 进行中（启动）；进行中 → 已结束（确认弹窗后自动填结束日期）
+- **删除**：确认后移除项目，并同步员工详情「参与项目」引用（`ProjectContext` + `EmployeeContext`）
+- 表格展示负责人、参与人摘要；`EmployeeProvider` 内嵌 `ProjectProvider`
 
 ### 6.7 值班管理（Story 4 对齐）
 
@@ -269,7 +270,7 @@ npm run preview:gh-pages # 预览 Pages 部署效果
 - [x] 5 大业务模块页面可访问
 - [x] 设计色板与布局规范一致
 - [x] 员工列表搜索、筛选、分页、导入向导 UI
-- [x] 员工详情 7 Tab 结构完整
+- [x] 员工详情：基础信息置顶 + 4 Tab（证书/技能/项目/兴趣）
 - [x] 部门树 + 详情联动
 - [x] 岗位列表新增/详情/编辑交互
 - [x] 项目卡片、值班日历、标签管理
@@ -312,6 +313,9 @@ npm run preview:gh-pages # 预览 Pages 部署效果
 | 2026-05-25 | 1.8 | 新增 App 端「我的资料」独立原型页 `/app/profile`（列表式资料编辑 + 个人介绍/政治面貌/籍贯/兴趣爱好） |
 | 2026-05-25 | 1.8 | 移除「系统设置」模块（操作日志、数据导入/导出菜单与路由） |
 | 2026-05-25 | 1.8 | 员工列表隐藏工作地点列；「更多」保留下拉项已移除 |
+| 2026-05-25 | 1.8 | 「证书管理」菜单移至标签中心（路由仍为 `/certificate/list`） |
+| 2026-05-25 | 1.8 | 标签中心三页「新增分类」「新增分组」改为弹窗输入（`CatalogNameInputModal`） |
+| 2026-05-25 | 1.8 | 项目列表由卡片改为表格展示 |
 | 2026-05-25 | 1.6 | 个人证书发证日期改为选填 |
 | 2026-05-25 | 1.7 | 技能/兴趣标签改为「分类 → 分组 → 标签名称」结构；`TagCatalogContext` + `TagCatalogList` 维护，与员工选择弹窗联动 |
 | 2026-05-25 | 1.7 | 抽取 `CatalogListEditor` 复用证书/技能/兴趣三类目录管理 UI；移除扁平 `SkillTag` / `SkillTagContext` |

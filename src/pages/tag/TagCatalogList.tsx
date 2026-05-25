@@ -8,6 +8,8 @@ const config: Record<
     summaryLine: (c: number, n: number) => string;
     sidebarTitle: string;
     newCategoryPrompt: string;
+    newCategoryLabel: string;
+    newGroupLabel: string;
     deleteCategoryConfirm: (name: string) => string;
     searchPlaceholder: string;
     newGroupPlaceholder: string;
@@ -22,7 +24,9 @@ const config: Record<
     summaryLine: (c, n) =>
       `维护员工「个人技能」选择弹窗中的分类与标签，共 ${c} 个分类、${n} 个标签。`,
     sidebarTitle: '技能分类',
-    newCategoryPrompt: '请输入技能分类名称',
+    newCategoryPrompt: '如：产品、技术',
+    newCategoryLabel: '分类名称',
+    newGroupLabel: '分组名称',
     deleteCategoryConfirm: (name) => `确定删除分类「${name}」及其下全部分组与技能标签？`,
     searchPlaceholder: '搜索分组或技能标签...',
     newGroupPlaceholder: '新分组名称，如：产品职责',
@@ -36,7 +40,9 @@ const config: Record<
     summaryLine: (c, n) =>
       `维护员工「兴趣爱好」选择弹窗中的分类与标签，共 ${c} 个分类、${n} 个标签。`,
     sidebarTitle: '兴趣分类',
-    newCategoryPrompt: '请输入兴趣分类名称',
+    newCategoryPrompt: '如：运动健身、文化艺术',
+    newCategoryLabel: '分类名称',
+    newGroupLabel: '分组名称',
     deleteCategoryConfirm: (name) => `确定删除分类「${name}」及其下全部分组与兴趣标签？`,
     searchPlaceholder: '搜索分组或兴趣标签...',
     newGroupPlaceholder: '新分组名称，如：球类运动',
@@ -59,6 +65,7 @@ export function TagCatalogList({ mode }: { mode: TagCatalogKind }) {
         addCategory: api.addCategory,
         updateCategory: api.updateCategory,
         removeCategory: api.removeCategory,
+        moveCategory: api.moveCategory,
         addGroup: api.addGroup,
         updateGroup: api.updateGroup,
         removeGroup: api.removeGroup,

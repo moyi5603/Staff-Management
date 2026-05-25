@@ -41,7 +41,7 @@ description: >-
 ### 员工
 
 - 列表：关键词（姓名/工号/手机/邮箱）、部门/状态筛选、分页 20 条、导入三步向导 UI。
-- 详情：6 Tab（基础 / 技能证书 / 项目 / 荣誉 / 兴趣 / 操作日志）；手机号脱敏。
+- 详情：顶部融合档案卡（摘要+基础信息）+ 4 Tab（证书/技能/参与项目/兴趣）；手机号脱敏。
 
 ### 未实现（勿假装完成）
 
@@ -56,8 +56,7 @@ description: >-
 | 岗位 | `/position/list` | `pages/position/PositionList.tsx` |
 | 项目 | `/project/list` | `pages/project/ProjectList.tsx` |
 | 值班 | `/duty/calendar` | `pages/duty/DutyCalendar.tsx` |
-| 证书 | `/certificate/list` | `pages/certificate/CertificateCatalogList.tsx` |
-| 技能/兴趣标签 | `/tag/skill` `/tag/interest` | `pages/tag/TagCatalogList.tsx`（`TagCatalogContext`） |
+| 证书/技能/兴趣标签 | `/certificate/list` `/tag/skill` `/tag/interest` | `pages/certificate/CertificateCatalogList.tsx`、`pages/tag/TagCatalogList.tsx` |
 
 新增页面时：同步 `App.tsx` 路由 + `menu.ts` 菜单项。
 

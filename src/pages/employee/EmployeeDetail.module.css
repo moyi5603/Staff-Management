@@ -13,9 +13,28 @@
   margin-bottom: var(--card-gap);
 }
 
-.profile {
+.profileMerged {
   display: flex;
   gap: 24px;
+  align-items: flex-start;
+}
+
+.profileMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.profileHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.profileHead h2 {
+  margin: 0;
+  font-size: 22px;
 }
 
 .avatarLg {
@@ -32,21 +51,58 @@
   flex-shrink: 0;
 }
 
-.profileInfo h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 20px;
 }
 
-.sub {
-  margin: 0 0 8px;
+@media (max-width: 1000px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .profileMerged {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileHead {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.infoItemFull {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  font-size: var(--font-helper);
   color: var(--color-text-secondary);
+  line-height: 1.4;
 }
 
-.meta,
-.contact {
-  margin: 4px 0;
+.infoValue {
   font-size: var(--font-body);
-  color: var(--color-text-secondary);
+  color: var(--color-text);
+  word-break: break-word;
 }
 
 .tabs {
@@ -75,22 +131,6 @@
   font-weight: 500;
 }
 
-.dl {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 12px 16px;
-  margin: 0;
-}
-
-.dl dt {
-  color: var(--color-text-secondary);
-  font-weight: 400;
-}
-
-.dl dd {
-  margin: 0;
-}
-
 .preWrap {
   white-space: pre-wrap;
   word-break: break-word;
@@ -113,27 +153,72 @@
   margin-bottom: 12px;
 }
 
-.skillCard,
-.certCard,
-.projectCard,
-.honorCard {
-  padding: 16px;
+.projectPanel {
+  margin-top: 4px;
+}
+
+.projectToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.projectSummary {
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+}
+
+.projectList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.projectRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  margin-bottom: 12px;
+  background: var(--color-white);
 }
 
-.projectHead {
+.projectMain {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
 }
 
-.certOps {
+.projectName {
+  font-size: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(100%, 320px);
+}
+
+.projectRole {
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.projectOps {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  flex-shrink: 0;
+  gap: 4px;
 }
 
 .desc {

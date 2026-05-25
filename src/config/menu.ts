@@ -14,7 +14,6 @@ export const menuConfig: MenuItem[] = [
       { key: 'department', label: '部门管理', path: '/department/list' },
       { key: 'employee', label: '员工管理', path: '/employee/list' },
       { key: 'position', label: '岗位管理', path: '/position/list' },
-      { key: 'certificate', label: '证书管理', path: '/certificate/list' },
     ],
   },
   {
@@ -31,6 +30,7 @@ export const menuConfig: MenuItem[] = [
     key: 'tag',
     label: '标签中心',
     children: [
+      { key: 'certificate', label: '证书管理', path: '/certificate/list' },
       { key: 'tag-skill', label: '技能标签', path: '/tag/skill' },
       { key: 'tag-interest', label: '兴趣标签', path: '/tag/interest' },
     ],

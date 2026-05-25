@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from './Button';
 import { Card } from './Card';
+import { CatalogNameInputModal } from './CatalogNameInputModal';
 import { PageHeader } from './PageHeader';
 import type { CatalogCategory } from '../data/catalogTypes';
 import type { CatalogGroup } from '../data/catalogTypes';
@@ -12,6 +13,7 @@ export interface CatalogEditorActions {
   addCategory: (name: string) => string;
   updateCategory: (id: string, name: string) => void;
   removeCategory: (id: string) => void;
+  moveCategory: (id: string, direction: 'up' | 'down') => void;
   addGroup: (categoryId: string, title: string) => void;
   updateGroup: (categoryId: string, groupIndex: number, title: string) => void;
   removeGroup: (categoryId: string, groupIndex: number) => void;
@@ -31,6 +33,8 @@ export interface CatalogListEditorLabels {
   emptyItems: string;
   emptyNoGroup: string;
   itemUnit: string;
+  newCategoryLabel: string;
+  newGroupLabel: string;
 }
 
 interface Props {
@@ -44,6 +48,7 @@ export function CatalogListEditor({ labels, actions }: Props) {
     addCategory,
     updateCategory,
     removeCategory,
+    moveCategory,
     addGroup,
     updateGroup,
     removeGroup,
@@ -53,14 +58,29 @@ export function CatalogListEditor({ labels, actions }: Props) {
 
   const [activeCategoryId, setActiveCategoryId] = useState(catalog[0]?.id ?? '');
   const [keyword, setKeyword] = useState('');
-  const [newGroupTitle, setNewGroupTitle] = useState('');
   const [newNameByGroup, setNewNameByGroup] = useState<Record<number, string>>({});
+  const [nameModal, setNameModal] = useState<'category' | 'group' | null>(null);
+  const [editCategory, setEditCategory] = useState<{ id: string; name: string } | null>(null);
+  const [editGroup, setEditGroup] = useState<{ groupIndex: number; title: string } | null>(null);
+  const [openCategoryMenuId, setOpenCategoryMenuId] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!catalog.some((c) => c.id === activeCategoryId)) {
       setActiveCategoryId(catalog[0]?.id ?? '');
     }
   }, [catalog, activeCategoryId]);
+
+  useEffect(() => {
+    if (!openCategoryMenuId) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
+        setOpenCategoryMenuId(null);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [openCategoryMenuId]);
 
   const activeCategory = useMemo(
     () => catalog.find((c) => c.id === activeCategoryId),
@@ -83,38 +103,57 @@ export function CatalogListEditor({ labels, actions }: Props) {
 
   const totalNames = countCatalogItems(catalog);
 
-  const handleAddCategory = () => {
-    const name = window.prompt(labels.newCategoryPrompt);
-    if (!name?.trim()) return;
-    const id = addCategory(name);
-    if (id) setActiveCategoryId(id);
-  };
-
   const renderGroup = (group: CatalogGroup, groupIndex: number) => (
     <section key={`${group.title}-${groupIndex}`} className={styles.groupBlock}>
       <div className={styles.groupHead}>
-        <h5 className={styles.groupTitle}>{group.title}</h5>
-        <div>
-          <Button
-            variant="text"
-            onClick={() => {
-              const title = window.prompt('编辑分组名称', group.title);
-              if (title?.trim()) updateGroup(activeCategoryId, groupIndex, title);
-            }}
+        <div className={styles.groupTitleRow}>
+          <h5 className={styles.groupTitle}>{group.title}</h5>
+          <button
+            type="button"
+            className={styles.groupEditIcon}
+            aria-label={`编辑分组 ${group.title}`}
+            onClick={() => setEditGroup({ groupIndex, title: group.title })}
           >
-            编辑分组
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              if (window.confirm(`确定删除分组「${group.title}」？`)) {
-                removeGroup(activeCategoryId, groupIndex);
-              }
-            }}
-          >
-            删除分组
-          </Button>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
+        <Button
+          variant="danger"
+          disabled={group.items.length > 0}
+          title={
+            group.items.length > 0
+              ? `分组下仍有 ${group.items.length} ${labels.itemUnit}，请先全部删除后再移除分组`
+              : undefined
+          }
+          onClick={() => {
+            if (group.items.length > 0) {
+              window.alert(
+                `分组「${group.title}」下仍有 ${group.items.length} ${labels.itemUnit}，请先全部删除后再移除分组。`,
+              );
+              return;
+            }
+            if (window.confirm(`确定删除分组「${group.title}」？`)) {
+              removeGroup(activeCategoryId, groupIndex);
+            }
+          }}
+        >
+          删除分组
+        </Button>
       </div>
 
       <div className={styles.nameCloud}>
@@ -173,14 +212,7 @@ export function CatalogListEditor({ labels, actions }: Props) {
 
   return (
     <>
-      <PageHeader
-        title={labels.pageTitle}
-        actions={
-          <Button variant="primary" onClick={handleAddCategory}>
-            + 新增分类
-          </Button>
-        }
-      />
+      <PageHeader title={labels.pageTitle} />
 
       <p className={styles.stats} style={{ margin: '0 0 16px' }}>
         {labels.summaryLine(catalog.length, totalNames)}
@@ -188,15 +220,18 @@ export function CatalogListEditor({ labels, actions }: Props) {
 
       <Card>
         <div className={styles.layout}>
-          <aside className={styles.sidebar}>
+          <aside className={styles.sidebar} ref={sidebarRef}>
             <div className={styles.sidebarHead}>
               <span>{labels.sidebarTitle}</span>
+              <Button variant="text" className={styles.sidebarAddBtn} onClick={() => setNameModal('category')}>
+                + 新增分类
+              </Button>
             </div>
             {catalog.length === 0 ? (
               <p className={styles.emptyMain}>暂无分类，请点击「新增分类」</p>
             ) : (
               <ul className={styles.categoryList}>
-                {catalog.map((cat) => (
+                {catalog.map((cat, index) => (
                   <li key={cat.id} className={styles.categoryItem}>
                     <button
                       type="button"
@@ -207,26 +242,68 @@ export function CatalogListEditor({ labels, actions }: Props) {
                     >
                       {cat.name}
                     </button>
-                    <div className={styles.categoryOps}>
-                      <Button
-                        variant="text"
-                        onClick={() => {
-                          const name = window.prompt('编辑分类名称', cat.name);
-                          if (name?.trim()) updateCategory(cat.id, name);
+                    <div className={styles.categoryMoreWrap}>
+                      <button
+                        type="button"
+                        className={styles.categoryMoreBtn}
+                        aria-label={`${cat.name} 更多操作`}
+                        aria-expanded={openCategoryMenuId === cat.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenCategoryMenuId((id) => (id === cat.id ? null : cat.id));
                         }}
                       >
-                        编
-                      </Button>
-                      <Button
-                        variant="text"
-                        onClick={() => {
-                          if (window.confirm(labels.deleteCategoryConfirm(cat.name))) {
-                            removeCategory(cat.id);
-                          }
-                        }}
-                      >
-                        删
-                      </Button>
+                        …
+                      </button>
+                      {openCategoryMenuId === cat.id && (
+                        <div className={styles.categoryMenu} role="menu">
+                          <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => {
+                              setOpenCategoryMenuId(null);
+                              setEditCategory({ id: cat.id, name: cat.name });
+                            }}
+                          >
+                            编辑
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            disabled={index === 0}
+                            onClick={() => {
+                              moveCategory(cat.id, 'up');
+                              setOpenCategoryMenuId(null);
+                            }}
+                          >
+                            上移
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            disabled={index === catalog.length - 1}
+                            onClick={() => {
+                              moveCategory(cat.id, 'down');
+                              setOpenCategoryMenuId(null);
+                            }}
+                          >
+                            下移
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            className={styles.categoryMenuDanger}
+                            onClick={() => {
+                              setOpenCategoryMenuId(null);
+                              if (window.confirm(labels.deleteCategoryConfirm(cat.name))) {
+                                removeCategory(cat.id);
+                              }
+                            }}
+                          >
+                            删除
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -254,30 +331,8 @@ export function CatalogListEditor({ labels, actions }: Props) {
                   onChange={(e) => setKeyword(e.target.value)}
                 />
 
-                <div className={styles.inlineForm}>
-                  <input
-                    value={newGroupTitle}
-                    placeholder={labels.newGroupPlaceholder}
-                    onChange={(e) => setNewGroupTitle(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (activeCategoryId && newGroupTitle.trim()) {
-                          addGroup(activeCategoryId, newGroupTitle);
-                          setNewGroupTitle('');
-                        }
-                      }
-                    }}
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      if (activeCategoryId && newGroupTitle.trim()) {
-                        addGroup(activeCategoryId, newGroupTitle);
-                        setNewGroupTitle('');
-                      }
-                    }}
-                  >
+                <div className={styles.toolbarRow}>
+                  <Button variant="primary" onClick={() => setNameModal('group')}>
                     + 新增分组
                   </Button>
                 </div>
@@ -294,6 +349,58 @@ export function CatalogListEditor({ labels, actions }: Props) {
           </div>
         </div>
       </Card>
+
+      {nameModal === 'category' && (
+        <CatalogNameInputModal
+          title="新增分类"
+          label={labels.newCategoryLabel}
+          placeholder={labels.newCategoryPrompt}
+          onConfirm={(name) => {
+            const id = addCategory(name);
+            if (id) setActiveCategoryId(id);
+            setNameModal(null);
+          }}
+          onClose={() => setNameModal(null)}
+        />
+      )}
+      {nameModal === 'group' && activeCategoryId && (
+        <CatalogNameInputModal
+          title="新增分组"
+          label={labels.newGroupLabel}
+          placeholder={labels.newGroupPlaceholder}
+          onConfirm={(name) => {
+            addGroup(activeCategoryId, name);
+            setNameModal(null);
+          }}
+          onClose={() => setNameModal(null)}
+        />
+      )}
+      {editCategory && (
+        <CatalogNameInputModal
+          title="编辑分类"
+          label={labels.newCategoryLabel}
+          placeholder={labels.newCategoryPrompt}
+          initialValue={editCategory.name}
+          onConfirm={(name) => {
+            updateCategory(editCategory.id, name);
+            setEditCategory(null);
+          }}
+          onClose={() => setEditCategory(null)}
+        />
+      )}
+      {editGroup && activeCategoryId && (
+        <CatalogNameInputModal
+          title="编辑分组"
+          label={labels.newGroupLabel}
+          placeholder={labels.newGroupPlaceholder}
+          initialValue={editGroup.title}
+          onConfirm={(name) => {
+            updateGroup(activeCategoryId, editGroup.groupIndex, name);
+            setEditGroup(null);
+          }}
+          onClose={() => setEditGroup(null)}
+        />
+      )}
     </>
   );
 }
