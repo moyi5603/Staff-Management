@@ -37,15 +37,43 @@
   color: var(--color-text-secondary);
 }
 
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
 .field input,
-.field select {
-  padding: 8px 12px;
+.field select,
+.field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-body);
+  line-height: 20px;
+  color: var(--color-text);
+  background: var(--color-white);
+}
+
+.field select {
+  color: var(--color-text);
+}
+
+.field select:has(option[value='']:checked) {
+  color: var(--color-text-placeholder);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 96px;
+  height: auto;
 }
 
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
 }

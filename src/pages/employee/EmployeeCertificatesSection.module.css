@@ -1,0 +1,88 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.header h4 {
+  margin: 0;
+  font-size: var(--font-card);
+}
+
+.empty {
+  margin: 0 0 12px;
+  color: var(--color-text-placeholder);
+  font-size: var(--font-body);
+}
+
+.emptyHint {
+  margin: 0 0 12px;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.certGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.certCard {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.certName {
+  display: -webkit-box;
+  margin: 0 0 6px;
+  font-size: var(--font-body);
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.certMeta {
+  margin: 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.certIssuer {
+  margin: 4px 0 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.certOps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+@media (max-width: 560px) {
+  .certGrid {
+    grid-template-columns: 1fr;
+  }
+}

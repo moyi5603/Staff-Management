@@ -1,7 +1,20 @@
 import { useMemo, useState } from 'react';
 import { Button } from '../../components/Button';
-import type { Employee, Project, ProjectMember, ProjectMemberRole, ProjectStatus } from '../../types';
+import type {
+  Employee,
+  Project,
+  ProjectLevel,
+  ProjectMember,
+  ProjectMemberRole,
+  ProjectPriority,
+  ProjectStatus,
+} from '../../types';
 import modalStyles from '../position/PositionList.module.css';
+
+const PROJECT_LEVELS: ProjectLevel[] = ['公司级', '部门级', '团队级'];
+const PROJECT_PRIORITIES: ProjectPriority[] = ['高', '中', '低'];
+const EDITABLE_ROLES: ProjectMemberRole[] = ['核心成员', '一般成员'];
+import { MemberSearchCombo } from './MemberSearchCombo';
 import styles from './ProjectList.module.css';
 
 export interface ProjectFormValues {
@@ -11,6 +24,8 @@ export interface ProjectFormValues {
   relatedDepartments: string[];
   leaderId: string;
   status: ProjectStatus;
+  level: ProjectLevel;
+  priority: ProjectPriority;
   startDate: string;
   endDate: string;
   members: ProjectMember[];
@@ -25,16 +40,6 @@ interface Props {
   defaultDepartmentId?: string;
   onSave: (values: ProjectFormValues) => void;
   onClose: () => void;
-}
-
-const ROLES: ProjectMemberRole[] = ['负责人', '核心成员', '一般成员'];
-
-function isManualMemberId(id: string): boolean {
-  return id.startsWith('manual-');
-}
-
-function isEmployeeMember(m: ProjectMember, employees: Employee[]): boolean {
-  return !isManualMemberId(m.employeeId) && employees.some((e) => e.id === m.employeeId);
 }
 
 function upsertLeaderMember(members: ProjectMember[], leader: Employee): ProjectMember[] {
@@ -62,21 +67,16 @@ export function ProjectFormModal({
   );
   const [leaderId, setLeaderId] = useState(initial?.leaderId ?? employeeOptions[0]?.id ?? '');
   const [status, setStatus] = useState<ProjectStatus>(initial?.status ?? '未启动');
+  const [level, setLevel] = useState<ProjectLevel>(initial?.level ?? '部门级');
+  const [priority, setPriority] = useState<ProjectPriority>(initial?.priority ?? '中');
   const [startDate, setStartDate] = useState(initial?.startDate ?? '');
   const [endDate, setEndDate] = useState(initial?.endDate ?? '');
-  const [members, setMembers] = useState<ProjectMember[]>(
-    initial?.members?.length
-      ? initial.members.map((m) => ({ ...m }))
-      : leaderId
-        ? [
-            {
-              employeeId: leaderId,
-              name: employeeOptions.find((e) => e.id === leaderId)?.name ?? '',
-              role: '负责人',
-            },
-          ]
-        : [],
-  );
+  const [members, setMembers] = useState<ProjectMember[]>(() => {
+    if (initial?.members?.length) return initial.members.map((m) => ({ ...m }));
+    const lid = initial?.leaderId ?? employeeOptions[0]?.id ?? '';
+    const leader = employeeOptions.find((e) => e.id === lid);
+    return leader ? [{ employeeId: leader.id, name: leader.name, role: '负责人' }] : [];
+  });
   const [error, setError] = useState('');
 
   const activeEmployees = useMemo(
@@ -89,6 +89,21 @@ export function ProjectFormModal({
     [departmentOptions, departmentId],
   );
 
+  const leader = useMemo(
+    () => activeEmployees.find((e) => e.id === leaderId),
+    [activeEmployees, leaderId],
+  );
+
+  const extraMembers = useMemo(
+    () => members.filter((m) => m.employeeId !== leaderId),
+    [members, leaderId],
+  );
+
+  const availableEmployees = useMemo(() => {
+    const usedIds = new Set(members.map((m) => m.employeeId));
+    return activeEmployees.filter((e) => !usedIds.has(e.id));
+  }, [activeEmployees, members]);
+
   const toggleRelatedDept = (deptName: string) => {
     setRelatedDepartments((prev) =>
       prev.includes(deptName) ? prev.filter((n) => n !== deptName) : [...prev, deptName],
@@ -97,58 +112,25 @@ export function ProjectFormModal({
 
   const handleLeaderChange = (id: string) => {
     setLeaderId(id);
-    const leader = activeEmployees.find((e) => e.id === id);
-    if (leader) setMembers((m) => upsertLeaderMember(m, leader));
+    const nextLeader = activeEmployees.find((e) => e.id === id);
+    if (nextLeader) setMembers((m) => upsertLeaderMember(m, nextLeader));
   };
 
-  const employeesAvailableAt = (index: number) => {
-    const usedIds = new Set(
-      members
-        .filter((_, i) => i !== index)
-        .filter((m) => isEmployeeMember(m, activeEmployees))
-        .map((m) => m.employeeId),
-    );
-    return activeEmployees.filter((e) => !usedIds.has(e.id) || members[index]?.employeeId === e.id);
+  const removeExtraMember = (employeeId: string) => {
+    setMembers((m) => m.filter((x) => x.employeeId !== employeeId));
   };
 
-  const addMember = () => {
-    setMembers((m) => [
-      ...m,
-      { employeeId: `manual-${Date.now()}`, name: '', role: '一般成员' },
-    ]);
+  const updateMemberRole = (employeeId: string, role: ProjectMember['role']) => {
+    setMembers((m) => m.map((x) => (x.employeeId === employeeId ? { ...x, role } : x)));
   };
 
-  const setMemberFromEmployee = (index: number, employeeId: string) => {
-    const emp = activeEmployees.find((e) => e.id === employeeId);
-    if (!emp) return;
-    setMembers((list) => {
-      const next = [...list];
-      next[index] = { employeeId: emp.id, name: emp.name, role: next[index].role };
-      return next;
-    });
-  };
-
-  const setMemberManualName = (index: number, name: string) => {
-    setMembers((list) => {
-      const next = [...list];
-      const id = isManualMemberId(next[index].employeeId)
-        ? next[index].employeeId
-        : `manual-${Date.now()}`;
-      next[index] = { employeeId: id, name, role: next[index].role };
-      return next;
-    });
-  };
-
-  const clearMemberSelection = (index: number) => {
-    setMembers((list) => {
-      const next = [...list];
-      next[index] = {
-        employeeId: `manual-${Date.now()}`,
-        name: next[index].name,
-        role: next[index].role,
-      };
-      return next;
-    });
+  const handleAddMember = (member: ProjectMember) => {
+    if (members.some((m) => m.employeeId === member.employeeId || m.name === member.name)) {
+      setError('该成员已在列表中');
+      return;
+    }
+    setMembers((m) => [...m, member]);
+    setError('');
   };
 
   const handleSubmit = () => {
@@ -177,22 +159,10 @@ export function ProjectFormModal({
       return;
     }
 
-    const leader = activeEmployees.find((e) => e.id === leaderId);
     if (!leader) {
       setError('项目负责人无效');
       return;
     }
-
-    const extraMembers = members.filter((m) => m.employeeId !== leaderId);
-    if (extraMembers.some((m) => !m.name.trim())) {
-      setError('请为每位成员选择员工或输入姓名');
-      return;
-    }
-
-    const normalizedMembers = upsertLeaderMember(
-      members.filter((m) => m.name.trim()),
-      leader,
-    );
 
     onSave({
       name: name.trim(),
@@ -201,9 +171,11 @@ export function ProjectFormModal({
       relatedDepartments: relatedDepartments.filter((n) => n !== primaryDeptName),
       leaderId,
       status,
+      level,
+      priority,
       startDate,
       endDate: endDate.trim(),
-      members: normalizedMembers,
+      members: upsertLeaderMember(members.filter((m) => m.name.trim()), leader),
     });
   };
 
@@ -224,6 +196,26 @@ export function ProjectFormModal({
               <option value="未启动">未启动</option>
               <option value="进行中">进行中</option>
               <option value="已结束">已结束</option>
+            </select>
+          </label>
+          <label className={modalStyles.formField}>
+            <span>项目级别 *</span>
+            <select value={level} onChange={(e) => setLevel(e.target.value as ProjectLevel)}>
+              {PROJECT_LEVELS.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={modalStyles.formField}>
+            <span>项目优先级 *</span>
+            <select value={priority} onChange={(e) => setPriority(e.target.value as ProjectPriority)}>
+              {PROJECT_PRIORITIES.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
             </select>
           </label>
           <label className={modalStyles.formField}>
@@ -283,75 +275,50 @@ export function ProjectFormModal({
           </div>
         </div>
 
-        <div className={modalStyles.dutyEditor}>
-          <div className={modalStyles.dutyEditorHead}>
-            <span>项目成员</span>
-            <Button variant="text" onClick={addMember}>
-              + 添加成员
-            </Button>
-          </div>
-          {members.map((member, index) => {
-            const isLeader = member.employeeId === leaderId;
-            const fromEmployee = isEmployeeMember(member, activeEmployees);
+        <div className={styles.memberSection}>
+          <span className={styles.sectionLabel}>项目成员</span>
 
-            return (
-              <div key={`${member.employeeId}-${index}`} className={styles.memberRow}>
-                {isLeader ? (
-                  <span className={styles.memberName}>{member.name}</span>
-                ) : (
-                  <div className={styles.memberPick}>
-                    <select
-                      className={styles.memberSelect}
-                      value={fromEmployee ? member.employeeId : ''}
-                      onChange={(e) => {
-                        const id = e.target.value;
-                        if (id) setMemberFromEmployee(index, id);
-                        else clearMemberSelection(index);
-                      }}
-                    >
-                      <option value="">请选择员工</option>
-                      {employeesAvailableAt(index).map((e) => (
-                        <option key={e.id} value={e.id}>
-                          {e.name}（{e.departmentName}）
-                        </option>
-                      ))}
-                    </select>
-                    <span className={styles.memberOr}>或</span>
-                    <input
-                      className={styles.memberInput}
-                      placeholder="输入姓名"
-                      value={member.name}
-                      onChange={(e) => setMemberManualName(index, e.target.value)}
-                    />
-                  </div>
-                )}
-                <select
-                  className={styles.memberRole}
-                  value={member.role}
-                  disabled={isLeader}
-                  onChange={(e) => {
-                    const next = [...members];
-                    next[index] = { ...next[index], role: e.target.value as ProjectMemberRole };
-                    setMembers(next);
-                  }}
-                >
-                  {ROLES.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
-                {!isLeader && (
-                  <Button
-                    variant="danger"
-                    onClick={() => setMembers((m) => m.filter((_, i) => i !== index))}
+          {leader && (
+            <div className={styles.leaderHint}>
+              <span className={styles.leaderTag}>负责人</span>
+              <span>
+                {leader.name}
+                <span className={styles.leaderMeta}>（与上方项目负责人一致，自动加入）</span>
+              </span>
+            </div>
+          )}
+
+          <div className={styles.memberAddPanel}>
+            <MemberSearchCombo availableEmployees={availableEmployees} onAdd={handleAddMember} />
+          </div>
+
+          {extraMembers.length > 0 ? (
+            <ul className={styles.memberList}>
+              {extraMembers.map((m) => (
+                <li key={m.employeeId} className={styles.memberListItem}>
+                  <span className={styles.memberListName}>{m.name}</span>
+                  <select
+                    className={styles.memberListRoleSelect}
+                    value={m.role}
+                    onChange={(e) =>
+                      updateMemberRole(m.employeeId, e.target.value as ProjectMemberRole)
+                    }
                   >
+                    {EDITABLE_ROLES.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                  <Button variant="text" onClick={() => removeExtraMember(m.employeeId)}>
                     移除
                   </Button>
-                )}
-              </div>
-            );
-          })}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.memberEmpty}>除负责人外，可继续添加项目成员</p>
+          )}
         </div>
 
         <div className={modalStyles.modalActions}>

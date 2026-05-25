@@ -134,8 +134,10 @@
 .cardHeadRight {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .desc {
@@ -194,6 +196,14 @@
   font-size: var(--font-card);
 }
 
+.detailBadges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .confirmText {
   margin: 0;
   color: var(--color-text-secondary);
@@ -227,65 +237,191 @@
   cursor: pointer;
 }
 
-.memberRow {
+.memberSection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.leaderHint {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.memberName {
-  flex: 1;
-  min-width: 160px;
-  font-size: var(--font-body);
-}
-
-.memberPick {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 280px;
-}
-
-.memberSelect {
-  flex: 1;
-  min-width: 140px;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: var(--color-primary-light);
   border-radius: var(--radius-md);
-  font-family: inherit;
   font-size: var(--font-body);
 }
 
-.memberInput {
-  flex: 1;
-  min-width: 120px;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-  font-size: var(--font-body);
-}
-
-.memberInput:focus,
-.memberSelect:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.memberOr {
+.leaderTag {
   flex-shrink: 0;
+  padding: 2px 8px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 4px;
+  font-size: var(--font-helper);
+}
+
+.leaderMeta {
+  margin-left: 6px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-helper);
+}
+
+.memberAddPanel {
+  padding: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.comboWrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.comboDropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.comboOption,
+.comboOptionActive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comboOption:hover,
+.comboOptionActive {
+  background: var(--color-table-hover);
+}
+
+.comboOptionName {
+  font-size: var(--font-body);
+  color: var(--color-text);
+}
+
+.comboOptionMeta {
   font-size: var(--font-helper);
   color: var(--color-text-secondary);
 }
 
-.memberRole {
-  width: 120px;
+.comboHint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  margin: 0;
+  padding: 8px 12px;
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.memberAddRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.memberAddInput {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  font-family: inherit;
+  background: var(--color-white);
+}
+
+.memberAddInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.memberAddRole {
+  width: 108px;
   flex-shrink: 0;
-  padding: 6px 10px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-family: inherit;
+  background: var(--color-white);
+}
+
+.memberList {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.memberListItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-white);
+}
+
+.memberListItem:last-child {
+  border-bottom: none;
+}
+
+.memberListName {
+  flex: 1;
+  font-size: var(--font-body);
+}
+
+.memberListRoleSelect {
+  min-width: 100px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  font-family: inherit;
+  background: var(--color-white);
+  color: var(--color-text);
+}
+
+.memberListRoleSelect:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.memberEmpty {
+  margin: 12px 0 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
 }

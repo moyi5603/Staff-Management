@@ -14,6 +14,7 @@ export const menuConfig: MenuItem[] = [
       { key: 'department', label: '部门管理', path: '/department/list' },
       { key: 'employee', label: '员工管理', path: '/employee/list' },
       { key: 'position', label: '岗位管理', path: '/position/list' },
+      { key: 'certificate', label: '证书管理', path: '/certificate/list' },
     ],
   },
   {
@@ -32,15 +33,6 @@ export const menuConfig: MenuItem[] = [
     children: [
       { key: 'tag-skill', label: '技能标签', path: '/tag/skill' },
       { key: 'tag-interest', label: '兴趣标签', path: '/tag/interest' },
-      { key: 'tag-group', label: '兴趣小组', path: '/tag/group' },
-    ],
-  },
-  {
-    key: 'system',
-    label: '系统设置',
-    children: [
-      { key: 'system-log', label: '操作日志', path: '/system/log' },
-      { key: 'system-import', label: '数据导入/导出', path: '/system/import' },
     ],
   },
 ];
@@ -51,11 +43,9 @@ export const routeTitles: Record<string, string> = {
   '/employee/form': '员工编辑',
   '/department/list': '部门管理',
   '/position/list': '岗位管理',
+  '/certificate/list': '证书管理',
   '/project/list': '项目列表',
   '/duty/calendar': '值班管理',
-  '/tag/skill': '技能标签',
-  '/tag/interest': '兴趣标签',
-  '/tag/group': '兴趣小组',
-  '/system/log': '操作日志',
-  '/system/import': '数据导入/导出',
+  '/tag/skill': '技能标签管理',
+  '/tag/interest': '兴趣标签管理',
 };

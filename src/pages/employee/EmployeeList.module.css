@@ -70,11 +70,14 @@
 .inlineSelect {
   flex: 1;
   min-width: 0;
-  padding: 8px 12px;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: var(--font-body);
   font-family: inherit;
+  line-height: 20px;
   background: var(--color-white);
   color: var(--color-text-secondary);
 }
@@ -88,6 +91,8 @@
 .searchCombo {
   display: flex;
   align-items: stretch;
+  box-sizing: border-box;
+  min-height: var(--control-height);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -100,7 +105,7 @@
 
 .searchType {
   flex-shrink: 0;
-  padding: 8px 10px;
+  padding: var(--control-padding-y) 10px;
   border: none;
   border-right: 1px solid var(--color-border);
   background: var(--color-bg);
@@ -113,7 +118,7 @@
 .searchInput {
   flex: 1;
   min-width: 0;
-  padding: 8px 12px;
+  padding: var(--control-padding-y) var(--control-padding-x);
   border: none;
   font-size: var(--font-body);
   font-family: inherit;
@@ -132,8 +137,10 @@
   align-items: center;
   flex: 1;
   min-width: 0;
+  box-sizing: border-box;
+  min-height: var(--control-height);
   gap: 6px;
-  padding: 6px 10px;
+  padding: 0 var(--control-padding-x);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-white);

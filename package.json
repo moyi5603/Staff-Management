@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_BASE_PATH=/ vite",
-    "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "VITE_BASE_PATH=/Staff-Management/ tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
-    "preview:gh-pages": "npm run build && vite preview"
+    "preview:gh-pages": "npm run build && vite preview --base /Staff-Management/"
   },
   "dependencies": {
     "react": "^19.0.0",

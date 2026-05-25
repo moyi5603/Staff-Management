@@ -5,16 +5,22 @@ import { Card } from '../../components/Card';
 import { StatusBadge } from '../../components/StatusBadge';
 import { TagPill } from '../../components/TagPill';
 import { useEmployees } from '../../context/EmployeeContext';
+import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
+import { EmployeeInterestsSection } from './EmployeeInterestsSection';
+import { EmployeeSkillsSection } from './EmployeeSkillsSection';
 import { maskPhone } from '../../mock/data';
 import type { Employee } from '../../types';
+import { formatEmployeeDisplayName, formatOptionalText } from '../../utils/employeeProfile';
+import { formatWorkLocation } from '../../utils/workLocation';
+import { formatDate } from '../../utils/formatDate';
 import styles from './EmployeeDetail.module.css';
 
-const TABS = ['基础信息', '技能证书', '项目经验', '个人荣誉', '兴趣爱好', '操作日志'] as const;
+const TABS = ['基础信息', '个人证书', '个人技能', '项目经验', '个人荣誉', '兴趣爱好', '操作日志'] as const;
 
 export function EmployeeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getById, removeEmployees } = useEmployees();
+  const { getById, removeEmployees, updateEmployee } = useEmployees();
   const emp = getById(id ?? '');
   const [tab, setTab] = useState<(typeof TABS)[number]>('基础信息');
 
@@ -57,9 +63,9 @@ export function EmployeeDetail() {
         <div className={styles.profile}>
           <div className={styles.avatarLg}>{emp.name.charAt(0)}</div>
           <div className={styles.profileInfo}>
-            <h2>{emp.name}</h2>
+            <h2>{formatEmployeeDisplayName(emp)}</h2>
             <p className={styles.sub}>
-              {emp.departmentName} · {emp.positionName}
+              {emp.departmentName} · {emp.positionName} · {formatWorkLocation(emp)}
             </p>
             <p className={styles.meta}>
               工号: {emp.empNo} · <StatusBadge status={emp.status} /> · 入职 {emp.joinDate}
@@ -84,60 +90,61 @@ export function EmployeeDetail() {
         ))}
       </div>
 
-      <Card>{renderTab(tab, emp)}</Card>
+      <Card>
+        {renderTab(tab, emp, {
+          onCertificatesChange: (certificates) => updateEmployee(emp.id, { certificates }),
+          onSkillsChange: (skills) => updateEmployee(emp.id, { skills }),
+          onInterestsChange: (interests) => updateEmployee(emp.id, { interests }),
+        })}
+      </Card>
     </>
   );
 }
 
-function renderTab(tab: string, emp: Employee) {
+function renderTab(
+  tab: string,
+  emp: Employee,
+  handlers: {
+    onCertificatesChange: (certificates: Employee['certificates']) => void;
+    onSkillsChange: (skills: Employee['skills']) => void;
+    onInterestsChange: (interests: Employee['interests']) => void;
+  },
+) {
   switch (tab) {
     case '基础信息':
       return (
         <dl className={styles.dl}>
           <Row label="工号" value={emp.empNo} />
           <Row label="姓名" value={emp.name} />
+          <Row label="花名" value={formatOptionalText(emp.nickname)} />
+          <Row label="性别" value={formatOptionalText(emp.gender)} />
+          <Row label="出生日期" value={formatDate(emp.birthday)} />
+          <Row label="试用期截止" value={formatDate(emp.probationEndDate)} />
+          <Row label="籍贯" value={formatOptionalText(emp.nativePlace)} />
+          <Row label="政治面貌" value={formatOptionalText(emp.politicalStatus)} />
+          <Row
+            label="个人介绍"
+            value={<span className={styles.preWrap}>{formatOptionalText(emp.bio)}</span>}
+          />
           <Row label="手机号" value={maskPhone(emp.phone)} />
           <Row label="手机尾号" value={emp.phoneSuffix} />
           <Row label="邮箱" value={emp.email} />
           <Row label="部门" value={emp.departmentName} />
           <Row label="岗位" value={emp.positionName} />
+          <Row label="工作地点" value={formatWorkLocation(emp)} />
           <Row label="入职日期" value={emp.joinDate} />
           <Row label="离职日期" value={emp.leaveDate ?? '—'} />
           <Row label="状态" value={<StatusBadge status={emp.status} />} />
         </dl>
       );
-    case '技能证书':
+    case '个人技能':
+      return <EmployeeSkillsSection skills={emp.skills} onChange={handlers.onSkillsChange} />;
+    case '个人证书':
       return (
-        <div>
-          <Section title="技能列表">
-            <div className={styles.tagGrid}>
-              {emp.skills.map((s) => (
-                <div key={s} className={styles.skillCard}>
-                  <strong>{s}</strong>
-                  <Button variant="text">编辑</Button>
-                </div>
-              ))}
-            </div>
-            <Button variant="text">+ 添加技能</Button>
-          </Section>
-          <Section title="认证证书">
-            {emp.certificates.map((c) => (
-              <div key={c.id} className={styles.certCard}>
-                <strong>{c.name}</strong>
-                <p>
-                  发证: {c.issueDate}
-                  {c.expireDate && ` · 到期: ${c.expireDate}`}
-                </p>
-                {c.issuer && <p>颁发机构: {c.issuer}</p>}
-                <div className={styles.certOps}>
-                  <Button variant="text">编辑</Button>
-                  <Button variant="danger">删除</Button>
-                </div>
-              </div>
-            ))}
-            <Button variant="text">+ 添加证书</Button>
-          </Section>
-        </div>
+        <EmployeeCertificatesSection
+          certificates={emp.certificates}
+          onChange={handlers.onCertificatesChange}
+        />
       );
     case '项目经验':
       return (
@@ -176,19 +183,19 @@ function renderTab(tab: string, emp: Employee) {
     case '兴趣爱好':
       return (
         <div>
-          <Section title="兴趣标签">
-            <div className={styles.interestGrid}>
-              {emp.interests.map((i) => (
-                <TagPill key={i} label={i} onRemove={() => {}} />
-              ))}
-            </div>
-            <Button variant="text">+ 添加兴趣</Button>
-          </Section>
-          <Section title="兴趣小组">
-            {emp.interestGroups.map((g) => (
-              <TagPill key={g} label={g} />
-            ))}
-          </Section>
+          <EmployeeInterestsSection
+            interests={emp.interests}
+            onChange={handlers.onInterestsChange}
+          />
+          {emp.interestGroups.length > 0 && (
+            <Section title="兴趣小组">
+              <div className={styles.interestGrid}>
+                {emp.interestGroups.map((g) => (
+                  <TagPill key={g} label={g} />
+                ))}
+              </div>
+            </Section>
+          )}
         </div>
       );
     case '操作日志':
@@ -211,9 +218,9 @@ function renderTab(tab: string, emp: Employee) {
             </tr>
             <tr>
               <td>HR-李华</td>
-              <td>新增技能</td>
+              <td>新增证书</td>
               <td>2026-05-18 09:00</td>
-              <td>添加技能: 数据分析</td>
+              <td>添加证书: PMP 项目管理专业人士</td>
             </tr>
           </tbody>
         </table>

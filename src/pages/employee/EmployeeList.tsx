@@ -15,6 +15,7 @@ import {
 import { departments } from '../../mock/data';
 import type { AccountStatus, Department, Employee } from '../../types';
 import { formatDate, formatDateTime } from '../../utils/formatDate';
+import { formatWorkLocation } from '../../utils/workLocation';
 import {
   cloneDepartmentTree,
   collectSubtree,
@@ -237,6 +238,7 @@ export function EmployeeList() {
                   <th>员工生日</th>
                   <th>入职时间</th>
                   <th>部门</th>
+                  <th>工作地点</th>
                   <th>手机号码</th>
                   <th>邮箱</th>
                   <th>试用截止</th>
@@ -412,6 +414,7 @@ function EmployeeRow({
       <td className={styles.cellNowrap}>{formatDate(emp.birthday)}</td>
       <td className={styles.cellNowrap}>{formatDate(emp.joinDate)}</td>
       <td>{emp.departmentName}</td>
+      <td className={styles.cellNowrap}>{formatWorkLocation(emp)}</td>
       <td className={styles.cellNowrap}>{emp.phone || '—'}</td>
       <td>{emp.email || '—'}</td>
       <td className={styles.cellNowrap}>{formatDate(emp.probationEndDate)}</td>

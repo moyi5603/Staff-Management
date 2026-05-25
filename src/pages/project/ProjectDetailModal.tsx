@@ -1,4 +1,5 @@
 import { Button } from '../../components/Button';
+import { ProjectMetaBadge } from '../../components/ProjectMetaBadge';
 import { StatusBadge } from '../../components/StatusBadge';
 import type { Project } from '../../types';
 import modalStyles from '../position/PositionList.module.css';
@@ -26,10 +27,18 @@ export function ProjectDetailModal({
       <div className={`${modalStyles.modal} ${modalStyles.modalWide}`} onClick={(e) => e.stopPropagation()}>
         <div className={styles.detailHead}>
           <h3>{project.name}</h3>
-          <StatusBadge status={project.status} />
+          <div className={styles.detailBadges}>
+            <ProjectMetaBadge label={project.level} />
+            <ProjectMetaBadge label={project.priority} />
+            <StatusBadge status={project.status} />
+          </div>
         </div>
 
         <dl className={modalStyles.dl}>
+          <dt>项目级别</dt>
+          <dd>{project.level}</dd>
+          <dt>项目优先级</dt>
+          <dd>{project.priority}</dd>
           <dt>主责部门</dt>
           <dd>{project.departmentName}</dd>
           <dt>项目负责人</dt>

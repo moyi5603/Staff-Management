@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { employees as initialEmployees } from '../mock/data';
 import type { Employee, EmployeeStatus } from '../types';
+import { formatWorkLocation } from '../utils/workLocation';
 
 interface EmployeeContextValue {
   employees: Employee[];
@@ -82,6 +83,7 @@ export function exportEmployeesCsv(list: Employee[]) {
     '员工生日',
     '入职时间',
     '部门',
+    '工作地点',
     '手机号码',
     '邮箱',
     '试用截止',
@@ -97,6 +99,7 @@ export function exportEmployeesCsv(list: Employee[]) {
       e.birthday ?? '',
       e.joinDate,
       e.departmentName,
+      formatWorkLocation(e, ''),
       e.phone,
       e.email,
       e.probationEndDate ?? '',

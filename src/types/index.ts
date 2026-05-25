@@ -1,6 +1,28 @@
 export type EmployeeStatus = '在职' | '休假' | '离职';
+export type EmployeeGender = '男' | '女';
+export type PoliticalStatus =
+  | '群众'
+  | '共青团员'
+  | '中共党员'
+  | '中共预备党员'
+  | '民主党派'
+  | '无党派人士'
+  | '其他';
+
+export const EMPLOYEE_GENDER_OPTIONS: EmployeeGender[] = ['男', '女'];
+export const POLITICAL_STATUS_OPTIONS: PoliticalStatus[] = [
+  '群众',
+  '共青团员',
+  '中共党员',
+  '中共预备党员',
+  '民主党派',
+  '无党派人士',
+  '其他',
+];
 export type AccountStatus = '正常' | '已禁用' | '待激活';
 export type ProjectStatus = '未启动' | '进行中' | '已结束';
+export type ProjectLevel = '公司级' | '部门级' | '团队级';
+export type ProjectPriority = '高' | '中' | '低';
 export type DepartmentStatus = '正常' | '已撤销';
 export type ProjectMemberRole = '负责人' | '核心成员' | '一般成员';
 
@@ -43,24 +65,10 @@ export interface Position {
   kpiCount: number;
 }
 
-export interface SkillTag {
-  id: string;
-  name: string;
-  type: '技能' | '兴趣';
-  employeeCount: number;
-  scene: string;
-}
-
-export interface InterestGroup {
-  id: string;
-  name: string;
-  memberCount: number;
-}
-
 export interface Certificate {
   id: string;
   name: string;
-  issueDate: string;
+  issueDate?: string;
   expireDate?: string;
   issuer?: string;
 }
@@ -92,12 +100,17 @@ export interface Project {
   startDate: string;
   endDate?: string;
   status: ProjectStatus;
+  level: ProjectLevel;
+  priority: ProjectPriority;
 }
 
 export interface Employee {
   id: string;
   empNo: string;
   name: string;
+  /** 花名 / 昵称 */
+  nickname?: string;
+  gender?: EmployeeGender;
   phone: string;
   phoneSuffix: string;
   email: string;
@@ -105,16 +118,24 @@ export interface Employee {
   departmentName: string;
   positionId: string;
   positionName: string;
+  workLocationProvince: string;
+  workLocationCity: string;
+  workLocationDistrict: string;
   joinDate: string;
   leaveDate?: string;
   status: EmployeeStatus;
   accountStatus: AccountStatus;
   /** 档案创建日期 YYYY-MM-DD */
   createdAt: string;
-  /** 生日 YYYY-MM-DD */
+  /** 出生日期 YYYY-MM-DD */
   birthday?: string;
   /** 试用期截止 YYYY-MM-DD */
   probationEndDate?: string;
+  /** 籍贯，如「浙江省杭州市」 */
+  nativePlace?: string;
+  politicalStatus?: PoliticalStatus;
+  /** 个人介绍 */
+  bio?: string;
   wechatBound: boolean;
   /** 最近登录时间 ISO 或 YYYY-MM-DD HH:mm */
   lastLoginAt?: string;

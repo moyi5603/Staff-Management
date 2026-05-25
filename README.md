@@ -7,14 +7,14 @@
 - **企业管理**：部门、员工、岗位
 - **项目管理**：项目列表（Tab 筛选、新增/编辑/详情/删除、启动与结束、成员管理）
 - **值班管理**：周历视图、批量排班
-- **标签中心**：技能标签、兴趣标签、兴趣小组
-- **系统设置**：操作日志、数据导入/导出
+- **标签中心**：技能标签、兴趣标签
 
 ## 快速开始
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173/
+npm run dev          # http://localhost:5173/（请用此命令，勿直接运行 vite）
+# App 端资料页原型：http://localhost:5173/app/profile
 npm run build        # 产出 dist/，用于 GitHub Pages
 npm run preview:gh-pages   # 本地预览 GitHub Pages 构建结果
 ```

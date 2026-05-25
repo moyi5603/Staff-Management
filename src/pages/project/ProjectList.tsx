@@ -3,6 +3,7 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { EmptyState } from '../../components/EmptyState';
 import { PageHeader } from '../../components/PageHeader';
+import { ProjectMetaBadge } from '../../components/ProjectMetaBadge';
 import { StatusBadge } from '../../components/StatusBadge';
 import { useEmployees } from '../../context/EmployeeContext';
 import { useProjects } from '../../context/ProjectContext';
@@ -51,6 +52,8 @@ function buildProject(
     startDate: values.startDate,
     endDate: values.endDate || undefined,
     status: values.status,
+    level: values.level,
+    priority: values.priority,
   };
 }
 
@@ -224,6 +227,8 @@ export function ProjectList() {
                   </strong>
                 </button>
                 <div className={styles.cardHeadRight}>
+                  <ProjectMetaBadge label={p.level} />
+                  <ProjectMetaBadge label={p.priority} />
                   <StatusBadge status={p.status} />
                   <Button variant="text" onClick={() => openEdit(p)}>
                     编辑
@@ -263,7 +268,8 @@ export function ProjectList() {
                 </div>
               </div>
               <p>
-                主责部门：{p.departmentName} | 负责人：{p.leaderName}
+                项目级别：{p.level} | 优先级：{p.priority} | 主责部门：{p.departmentName} | 负责人：
+                {p.leaderName}
               </p>
               {p.members.length > 0 && (
                 <p>参与人：{p.members.map((m) => m.name).join('、')}</p>
