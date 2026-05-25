@@ -27,10 +27,7 @@ export const menuConfig: MenuItem[] = [
   {
     key: 'duty',
     label: '值班管理',
-    children: [
-      { key: 'duty-calendar', label: '值班日历', path: '/duty/calendar' },
-      { key: 'duty-records', label: '值班记录', path: '/duty/calendar?view=list' },
-    ],
+    children: [{ key: 'duty-calendar', label: '值班日历', path: '/duty/calendar' }],
   },
   {
     key: 'tag',

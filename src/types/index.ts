@@ -1,20 +1,34 @@
 export type EmployeeStatus = '在职' | '休假' | '离职';
+export type AccountStatus = '正常' | '已禁用' | '待激活';
 export type ProjectStatus = '筹备中' | '进行中' | '已结束';
-export type DutyShift = '白班' | '夜班' | '24小时';
 export type DepartmentStatus = '正常' | '已撤销';
 export type ProjectMemberRole = '负责人' | '核心成员' | '一般成员';
+
+export interface DepartmentKpi {
+  name: string;
+  target: string;
+  period: string;
+}
 
 export interface Department {
   id: string;
   name: string;
   parentId: string | null;
   leaderId?: string;
-  hrbpId?: string;
-  adminContactId?: string;
+  email?: string;
   description?: string;
+  culture?: string;
+  functionDetail?: string;
+  kpis?: DepartmentKpi[];
   status: DepartmentStatus;
   employeeCount: number;
   children?: Department[];
+}
+
+export interface PositionKpi {
+  name: string;
+  target: string;
+  period: string;
 }
 
 export interface Position {
@@ -25,6 +39,7 @@ export interface Position {
   employeeCount: number;
   coreDuties: string[];
   detailDuty?: string;
+  kpis?: PositionKpi[];
   kpiCount: number;
 }
 
@@ -93,6 +108,16 @@ export interface Employee {
   joinDate: string;
   leaveDate?: string;
   status: EmployeeStatus;
+  accountStatus: AccountStatus;
+  /** 档案创建日期 YYYY-MM-DD */
+  createdAt: string;
+  /** 生日 YYYY-MM-DD */
+  birthday?: string;
+  /** 试用期截止 YYYY-MM-DD */
+  probationEndDate?: string;
+  wechatBound: boolean;
+  /** 最近登录时间 ISO 或 YYYY-MM-DD HH:mm */
+  lastLoginAt?: string;
   avatar?: string;
   skills: string[];
   interests: string[];
@@ -107,7 +132,10 @@ export interface DutyRecord {
   departmentId: string;
   departmentName: string;
   date: string;
-  shift: DutyShift;
+  /** 值班开始小时 0–23 */
+  startHour: number;
+  /** 值班结束小时 0–23（开区间，可小于 startHour 表示跨天） */
+  endHour: number;
   employeeId: string;
   employeeName: string;
   phone?: string;

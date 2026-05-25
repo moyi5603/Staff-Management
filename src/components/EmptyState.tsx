@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom';
 import { Button } from './Button';
 import styles from './EmptyState.module.css';
 
 interface Props {
   title?: string;
   description?: string;
-  actions?: { label: string; onClick?: () => void; primary?: boolean }[];
+  actions?: { label: string; onClick?: () => void; href?: string; primary?: boolean }[];
 }
 
 export function EmptyState({
@@ -19,11 +20,21 @@ export function EmptyState({
       {description && <p className={styles.desc}>{description}</p>}
       {actions.length > 0 && (
         <div className={styles.actions}>
-          {actions.map((a) => (
-            <Button key={a.label} variant={a.primary ? 'primary' : 'default'} onClick={a.onClick}>
-              {a.label}
-            </Button>
-          ))}
+          {actions.map((a) =>
+            a.href ? (
+              <Link key={a.label} to={a.href}>
+                <Button variant={a.primary ? 'primary' : 'default'}>{a.label}</Button>
+              </Link>
+            ) : (
+              <Button
+                key={a.label}
+                variant={a.primary ? 'primary' : 'default'}
+                onClick={a.onClick}
+              >
+                {a.label}
+              </Button>
+            ),
+          )}
         </div>
       )}
     </div>

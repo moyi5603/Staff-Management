@@ -67,3 +67,12 @@
   font-size: var(--font-helper);
   color: var(--color-text-secondary);
 }
+
+.formError {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  color: var(--color-danger);
+  background: #fff2f0;
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+}

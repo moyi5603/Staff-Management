@@ -1,0 +1,188 @@
+.panel {
+  padding: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.searchWrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.treeActions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: var(--font-helper);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.allBtn {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 4px;
+  margin-bottom: 4px;
+  font-size: var(--font-body);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.allBtn:hover {
+  color: var(--color-primary);
+}
+
+.allBtn.selected {
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1px;
+}
+
+.treeScroll {
+  flex: 1;
+  overflow: auto;
+}
+
+.treeNode {
+  margin-bottom: 2px;
+}
+
+.treeRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  transition: background 0.12s;
+}
+
+.treeRow.selected {
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary);
+}
+
+.expandPlaceholder {
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.expandBtn {
+  border: none;
+  background: transparent;
+  width: 20px;
+  padding: 0;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.deptBtn {
+  flex: 1;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 4px;
+  font-size: var(--font-body);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.deptBtn:hover {
+  color: var(--color-primary);
+}
+
+.empty {
+  margin: 16px 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+  text-align: center;
+}
+
+/* 员工列表侧栏等窄栏场景 */
+.compact.panel {
+  padding: 8px;
+  min-height: 320px;
+}
+
+.compact .searchWrap {
+  margin-bottom: 8px;
+}
+
+.compact .searchIcon {
+  left: 8px;
+  font-size: 12px;
+}
+
+.compact .searchInput {
+  padding: 6px 8px 6px 26px;
+  font-size: var(--font-helper);
+}
+
+.compact .treeActions {
+  gap: 8px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+}
+
+.compact .allBtn,
+.compact .deptBtn {
+  padding: 5px 2px;
+  font-size: var(--font-helper);
+  line-height: 1.35;
+}
+
+.compact .expandBtn,
+.compact .expandPlaceholder {
+  width: 16px;
+}
+
+.compact .deptBtn {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact .treeRow.selected,
+.compact .allBtn.selected {
+  border-left-width: 2px;
+}

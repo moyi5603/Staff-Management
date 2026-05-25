@@ -1,18 +1,30 @@
 import { useState, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { StatusBadge } from '../../components/StatusBadge';
 import { TagPill } from '../../components/TagPill';
-import { getEmployeeById, maskPhone } from '../../mock/data';
+import { useEmployees } from '../../context/EmployeeContext';
+import { maskPhone } from '../../mock/data';
+import type { Employee } from '../../types';
 import styles from './EmployeeDetail.module.css';
 
 const TABS = ['基础信息', '技能证书', '项目经验', '个人荣誉', '兴趣爱好', '操作日志'] as const;
 
 export function EmployeeDetail() {
   const { id } = useParams();
-  const emp = getEmployeeById(id ?? '');
+  const navigate = useNavigate();
+  const { getById, removeEmployees } = useEmployees();
+  const emp = getById(id ?? '');
   const [tab, setTab] = useState<(typeof TABS)[number]>('基础信息');
+
+  const handleDelete = () => {
+    if (!emp) return;
+    if (window.confirm(`确定删除员工「${emp.name}」？刷新页面将恢复 Mock 数据。`)) {
+      removeEmployees([emp.id]);
+      navigate('/employee/list');
+    }
+  };
 
   if (!emp) {
     return (
@@ -35,7 +47,9 @@ export function EmployeeDetail() {
           <Link to={`/employee/form/${emp.id}`}>
             <Button variant="primary">编辑</Button>
           </Link>
-          <Button variant="danger">删除</Button>
+          <Button variant="danger" onClick={handleDelete}>
+            删除
+          </Button>
         </div>
       </div>
 
@@ -75,7 +89,7 @@ export function EmployeeDetail() {
   );
 }
 
-function renderTab(tab: string, emp: NonNullable<ReturnType<typeof getEmployeeById>>) {
+function renderTab(tab: string, emp: Employee) {
   switch (tab) {
     case '基础信息':
       return (

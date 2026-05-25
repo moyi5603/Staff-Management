@@ -18,9 +18,16 @@
 .treeActions {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--color-border);
+}
+
+.dragHint {
+  margin: 0 0 12px;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+  line-height: 1.5;
 }
 
 .treeNode {
@@ -32,11 +39,56 @@
   align-items: center;
   gap: 4px;
   border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .treeRow.selected {
   background: var(--color-primary-light);
   border-left: 3px solid var(--color-primary);
+}
+
+.treeRow.dragging {
+  opacity: 0.45;
+}
+
+.treeRow.dropBefore {
+  border-top-color: var(--color-primary);
+}
+
+.treeRow.dropAfter {
+  border-bottom-color: var(--color-primary);
+}
+
+.treeRow.dropInside {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.dragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  color: var(--color-text-placeholder);
+  font-size: 12px;
+  letter-spacing: -2px;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle:hover {
+  color: var(--color-primary);
+}
+
+.expandPlaceholder {
+  width: 20px;
+  flex-shrink: 0;
 }
 
 .expandBtn {
@@ -68,9 +120,40 @@
 
 .dl {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 12px;
+  grid-template-columns: 140px 1fr;
+  gap: 12px 16px;
   margin: 0 0 16px;
+}
+
+.textBlock {
+  white-space: pre-line;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.kpiTable {
+  width: 100%;
+  font-size: var(--font-table);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.kpiTable th {
+  background: var(--color-bg);
+  font-weight: 500;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.kpiTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.kpiTable tr:last-child td {
+  border-bottom: none;
 }
 
 .dl dt {
@@ -79,6 +162,14 @@
 
 .dl dd {
   margin: 0;
+}
+
+.emailLink {
+  color: var(--color-primary);
+}
+
+.emailLink:hover {
+  text-decoration: underline;
 }
 
 .stats {
@@ -97,4 +188,152 @@
   color: var(--color-text-placeholder);
   text-align: center;
   padding: 48px;
+}
+
+.toast {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  padding: 10px 20px;
+  background: var(--color-text);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalWide {
+  width: 640px;
+}
+
+.modal h3 {
+  margin: 0 0 16px;
+  font-size: var(--font-card);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.uploadZone {
+  display: block;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 32px;
+  text-align: center;
+  color: var(--color-text-placeholder);
+  margin: 16px 0;
+  cursor: pointer;
+}
+
+.uploadZone:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--font-body);
+}
+
+.formField span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-helper);
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+}
+
+.formFieldFull {
+  grid-column: 1 / -1;
+}
+
+.formError {
+  margin: 0 0 12px;
+  color: var(--color-danger);
+  font-size: var(--font-helper);
+}
+
+.kpiEditor {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.kpiEditorHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.kpiRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px auto;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.kpiRow input,
+.kpiRow select {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.importPreview ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--color-text-secondary);
+}
+
+.importResult {
+  color: var(--color-success);
+}
+
+.confirmText {
+  margin: 0 0 8px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }

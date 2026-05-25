@@ -44,11 +44,38 @@
 }
 
 .emptyCell {
+  width: 100%;
   padding: 24px;
   text-align: center;
   color: var(--color-text-placeholder);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-helper);
+  font-family: inherit;
+}
+
+.emptyCell:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.addMore {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: var(--font-helper);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.addMore:hover {
+  text-decoration: underline;
 }
 
 .dutyCell {
@@ -69,10 +96,30 @@
   font-size: var(--font-body);
 }
 
-.shift {
+.timeRange {
   font-size: var(--font-helper);
   color: var(--color-text-secondary);
   margin: 4px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.timeHint {
+  margin: 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+  line-height: 1.5;
+}
+
+.note {
+  font-size: var(--font-helper);
+  color: var(--color-text-placeholder);
+  margin-bottom: 4px;
 }
 
 .modalOverlay {
@@ -90,23 +137,56 @@
   padding: 24px;
   border-radius: var(--radius-md);
   width: 440px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.modal label {
+.modal h3 {
+  margin: 0;
+  font-size: var(--font-card);
+}
+
+.formField {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: var(--font-body);
 }
 
-.modal select,
-.modal input {
-  padding: 8px;
+.formField span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-helper);
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  padding: 8px 12px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  font-family: inherit;
+}
+
+.formError {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-helper);
+}
+
+.batchHint {
+  margin: 0;
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.batchUpload {
+  margin: 0;
+  font-size: var(--font-body);
 }
 
 .uploadZone {
@@ -119,7 +199,29 @@
 
 .modalActions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   gap: 12px;
   margin-top: 8px;
+}
+
+.modalActionsSpacer {
+  flex: 1;
+}
+
+.deleteBtn {
+  margin-right: auto;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  padding: 10px 20px;
+  background: var(--color-text);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

@@ -44,6 +44,17 @@ npm run preview:gh-pages
 
 - 实现记录 PRD：[docs/PRD-智能找同事-管理后台-实现记录.md](docs/PRD-智能找同事-管理后台-实现记录.md)
 
+## Cursor Agent Skill
+
+本仓库提供项目级 Skill，供 Cursor Agent 在改动本仓库时自动加载（无需每次手动点名）：
+
+- **路径**：[`.cursor/skills/staff-management/SKILL.md`](.cursor/skills/staff-management/SKILL.md)
+- **覆盖**：技术约定、路由与文件对照、部门/员工等产品硬约束、实现检查清单、`npm run build` 验证要求
+
+在 Agent 对话中直接描述任务即可（例如「给部门列表加搜索」）；涉及员工、部门、`src/pages/`、Mock 数据等时，Agent 会根据 Skill 的 `description` 自动选用。
+
+若已安装 [Superpowers](https://github.com/obra/superpowers) 插件并配置 `~/.cursor/hooks.json` 的 `sessionStart` hook，会话还会注入通用流程 Skill（如 brainstorm、调试、完成前验证）。个人环境可参考 Superpowers 文档配置。
+
 ## 技术栈
 
 React 19 · TypeScript · Vite · React Router · CSS Modules
