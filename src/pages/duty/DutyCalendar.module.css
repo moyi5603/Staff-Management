@@ -150,33 +150,6 @@
   font-size: var(--font-card);
 }
 
-.formField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: var(--font-body);
-}
-
-.formField span {
-  color: var(--color-text-secondary);
-  font-size: var(--font-helper);
-}
-
-.formField input,
-.formField select,
-.formField textarea {
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-}
-
-.formError {
-  margin: 0;
-  color: var(--color-danger);
-  font-size: var(--font-helper);
-}
-
 .batchHint {
   margin: 0;
   font-size: var(--font-helper);
@@ -184,17 +157,43 @@
   line-height: 1.5;
 }
 
-.batchUpload {
-  margin: 0;
-  font-size: var(--font-body);
+.batchUploadRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.fileInputHidden {
+  display: none;
 }
 
 .uploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   border: 2px dashed var(--color-border);
   padding: 24px;
   text-align: center;
   color: var(--color-text-placeholder);
   border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.uploadZone:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text-secondary);
+}
+
+.uploadFileName {
+  font-size: var(--font-body);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.uploadHint {
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
 }
 
 .modalActions {

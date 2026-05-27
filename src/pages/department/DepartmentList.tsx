@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { PageHeader } from '../../components/PageHeader';
-import { StatusBadge } from '../../components/StatusBadge';
 import { departments, employees } from '../../mock/data';
 import type { Department } from '../../types';
 import {
@@ -88,7 +87,9 @@ export function DepartmentList() {
         updateDepartment(prev, formModal.department.id, {
           name: values.name,
           leaderId: values.leaderId || undefined,
+          leaderName: values.leaderName || undefined,
           email: values.email || undefined,
+          phone: values.phone || undefined,
           description: values.description || undefined,
           culture: values.culture || undefined,
           functionDetail: values.functionDetail || undefined,
@@ -103,7 +104,9 @@ export function DepartmentList() {
         const next = addDepartment(prev, parentId, {
           name: values.name,
           leaderId: values.leaderId || undefined,
+          leaderName: values.leaderName || undefined,
           email: values.email || undefined,
+          phone: values.phone || undefined,
           description: values.description || undefined,
           culture: values.culture || undefined,
           functionDetail: values.functionDetail || undefined,
@@ -232,7 +235,11 @@ export function DepartmentList() {
                 <dt>上级部门</dt>
                 <dd>{parentDept?.name ?? (selected.parentId ? '—' : '无')}</dd>
                 <dt>部门负责人</dt>
-                <dd>{employees.find((e) => e.id === selected.leaderId)?.name ?? '—'}</dd>
+                <dd>
+                  {selected.leaderName ??
+                    employees.find((e) => e.id === selected.leaderId)?.name ??
+                    '—'}
+                </dd>
                 <dt>部门邮箱</dt>
                 <dd>
                   {selected.email ? (
@@ -243,6 +250,8 @@ export function DepartmentList() {
                     '—'
                   )}
                 </dd>
+                <dt>联系电话</dt>
+                <dd>{selected.phone ?? '—'}</dd>
                 <dt>部门简介</dt>
                 <dd>{selected.description ?? '—'}</dd>
                 <dt>部门文化</dt>
@@ -252,9 +261,7 @@ export function DepartmentList() {
                 <dt>部门绩效指标</dt>
                 <dd className={styles.textBlock}>{selected.performanceIndicators ?? '—'}</dd>
                 <dt>状态</dt>
-                <dd>
-                  <StatusBadge status={selected.status} />
-                </dd>
+                <dd>{selected.status}</dd>
               </dl>
               <p className={styles.stats}>
                 在职员工：{selected.employeeCount} 人 · 子部门：{selected.children?.length ?? 0} 个

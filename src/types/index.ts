@@ -1,4 +1,12 @@
-export type EmployeeStatus = '在职' | '休假' | '离职';
+export type EmployeeStatus = '在职' | '离职';
+export type EmployeeRole = '普通员工' | '部门管理员' | 'HR管理员' | '系统管理员';
+
+export const EMPLOYEE_ROLE_OPTIONS: EmployeeRole[] = [
+  '普通员工',
+  '部门管理员',
+  'HR管理员',
+  '系统管理员',
+];
 export type EmployeeGender = '男' | '女';
 export type PoliticalStatus =
   | '群众'
@@ -21,17 +29,25 @@ export const POLITICAL_STATUS_OPTIONS: PoliticalStatus[] = [
 ];
 export type AccountStatus = '正常' | '已禁用' | '待激活';
 export type ProjectStatus = '未启动' | '进行中' | '已结束';
+/** 列表展示用：进行中且计划结束日已过时为已延期 */
+export type ProjectDisplayStatus = ProjectStatus | '已延期';
 export type ProjectLevel = '公司级' | '部门级' | '团队级';
 export type ProjectPriority = '高' | '中' | '低';
-export type DepartmentStatus = '正常' | '已撤销';
+export type DepartmentStatus = '正常' | '停用';
+export type PositionStatus = '正常' | '停用';
 export type ProjectMemberRole = '负责人' | '核心成员' | '一般成员';
 
 export interface Department {
   id: string;
   name: string;
   parentId: string | null;
+  /** 部门负责人员工 ID（来自员工管理） */
   leaderId?: string;
+  /** 部门负责人姓名（选择员工时冗余存储，便于展示） */
+  leaderName?: string;
   email?: string;
+  /** 部门联系电话 */
+  phone?: string;
   description?: string;
   culture?: string;
   functionDetail?: string;
@@ -44,7 +60,16 @@ export interface Department {
 
 export interface Position {
   id: string;
+  /** 岗位编号（列表展示） */
+  positionNo: number;
+  /** 岗位编码 */
+  code: string;
   name: string;
+  /** 岗位排序，越小越靠前 */
+  sortOrder: number;
+  status: PositionStatus;
+  /** 创建时间 YYYY-MM-DD HH:mm:ss */
+  createdAt: string;
   departmentId: string;
   departmentName: string;
   employeeCount: number;
@@ -53,14 +78,12 @@ export interface Position {
   detailDuty?: string;
   /** 岗位绩效指标（自由文本） */
   performanceIndicators?: string;
+  remark?: string;
 }
 
 export interface Certificate {
   id: string;
   name: string;
-  issueDate?: string;
-  expireDate?: string;
-  issuer?: string;
 }
 
 export interface Honor {
@@ -75,6 +98,8 @@ export interface ProjectMember {
   employeeId: string;
   name: string;
   role: ProjectMemberRole;
+  /** 成员所属部门（展示用，添加时从员工档案带入） */
+  departmentName?: string;
 }
 
 export interface Project {
@@ -114,7 +139,11 @@ export interface Employee {
   joinDate: string;
   leaveDate?: string;
   status: EmployeeStatus;
+  /** 系统角色 */
+  role: EmployeeRole;
   accountStatus: AccountStatus;
+  /** 备注 */
+  remark?: string;
   /** 档案创建日期 YYYY-MM-DD */
   createdAt: string;
   /** 出生日期 YYYY-MM-DD */
@@ -158,10 +187,6 @@ export interface DutyRecord {
   departmentId: string;
   departmentName: string;
   date: string;
-  /** 值班开始小时 0–23 */
-  startHour: number;
-  /** 值班结束小时 0–23（开区间，可小于 startHour 表示跨天） */
-  endHour: number;
   employeeId: string;
   employeeName: string;
   phone?: string;

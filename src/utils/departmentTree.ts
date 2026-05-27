@@ -162,6 +162,7 @@ export function addDepartment(
     name: dept.name,
     parentId,
     leaderId: dept.leaderId,
+    leaderName: dept.leaderName,
     email: dept.email,
     description: dept.description,
     culture: dept.culture,

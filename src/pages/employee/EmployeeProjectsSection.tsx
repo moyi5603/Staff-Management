@@ -1,4 +1,5 @@
 import type { Employee } from '../../types';
+import { getProjectDisplayStatusFromFields } from '../../utils/projectStatus';
 import styles from './EmployeeProjectsSection.module.css';
 
 type EmployeeProject = Employee['projects'][number];
@@ -37,7 +38,7 @@ export function EmployeeProjectsSection({ projects }: Props) {
                   <td className={styles.nameCell} title={p.projectName}>
                     {p.projectName}
                   </td>
-                  <td>{p.status}</td>
+                  <td>{getProjectDisplayStatusFromFields(p.status, p.endDate)}</td>
                   <td>{p.level}</td>
                   <td>{p.priority}</td>
                   <td>{p.departmentName}</td>

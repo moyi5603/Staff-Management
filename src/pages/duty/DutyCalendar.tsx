@@ -5,15 +5,8 @@ import { PageHeader } from '../../components/PageHeader';
 import { departments, dutyRecords as initialDutyRecords, employees } from '../../mock/data';
 import type { DutyRecord } from '../../types';
 import { cloneDepartmentTree, flattenDepartmentTree } from '../../utils/departmentTree';
-import {
-  addDays,
-  eachDateInRange,
-  formatMonthLabel,
-  getMonday,
-  getWeekDays,
-} from '../../utils/dutyCalendar';
-import { dutyCoversHour, formatDutyTimeRange, HOUR_OPTIONS } from '../../utils/dutyTime';
-import { DutyBatchModal, type DutyBatchValues } from './DutyBatchModal';
+import { addDays, formatMonthLabel, getMonday, getWeekDays } from '../../utils/dutyCalendar';
+import { DutyBatchModal } from './DutyBatchModal';
 import { DutyFormModal, type DutyFormValues } from './DutyFormModal';
 import styles from './DutyCalendar.module.css';
 
@@ -28,8 +21,6 @@ function buildRecord(values: DutyFormValues, deptName: string, existing?: DutyRe
     departmentId: values.departmentId,
     departmentName: deptName,
     date: values.date,
-    startHour: values.startHour,
-    endHour: values.endHour,
     employeeId: emp.id,
     employeeName: emp.name,
     phone: emp.phone,
@@ -43,7 +34,6 @@ export function DutyCalendar() {
   );
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
   const [deptFilter, setDeptFilter] = useState('');
-  const [hourFilter, setHourFilter] = useState<number | ''>('');
   const [formModal, setFormModal] = useState<FormModalState | null>(null);
   const [showBatch, setShowBatch] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -67,12 +57,8 @@ export function DutyCalendar() {
   }, []);
 
   const filteredRecords = useMemo(() => {
-    return records.filter((r) => {
-      if (deptFilter && r.departmentId !== deptFilter) return false;
-      if (hourFilter !== '' && !dutyCoversHour(r.startHour, r.endHour, hourFilter)) return false;
-      return true;
-    });
-  }, [records, deptFilter, hourFilter]);
+    return records.filter((r) => !deptFilter || r.departmentId === deptFilter);
+  }, [records, deptFilter]);
 
   const calendarData = useMemo(() => {
     const map = new Map<string, DutyRecord[]>();
@@ -81,7 +67,11 @@ export function DutyCalendar() {
       map.get(d.date)!.push(d);
     }
     for (const list of map.values()) {
-      list.sort((a, b) => a.startHour - b.startHour);
+      list.sort(
+        (a, b) =>
+          a.departmentName.localeCompare(b.departmentName, 'zh-CN') ||
+          a.employeeName.localeCompare(b.employeeName, 'zh-CN'),
+      );
     }
     return map;
   }, [filteredRecords]);
@@ -109,34 +99,10 @@ export function DutyCalendar() {
     showToast('值班已删除');
   };
 
-  const handleBatch = (values: DutyBatchValues) => {
-    const deptName = deptNameById.get(values.departmentId) ?? '—';
-    const emp = employees.find((e) => e.id === values.employeeId);
-    if (!emp) return;
-
-    const dates = eachDateInRange(values.startDate, values.endDate);
-    const next: DutyRecord[] = dates.map((date, i) => ({
-      id: `duty-${Date.now()}-${i}`,
-      departmentId: values.departmentId,
-      departmentName: deptName,
-      date,
-      startHour: values.startHour,
-      endHour: values.endHour,
-      employeeId: emp.id,
-      employeeName: emp.name,
-      phone: emp.phone,
-    }));
-
-    setRecords((prev) => [...prev, ...next]);
+  const handleBatchImport = (fileName: string) => {
     setShowBatch(false);
-    showToast(`已批量排班 ${next.length} 天`);
+    showToast(`已上传排班表「${fileName}」（演示，未解析写入日历）`);
   };
-
-  const batchDefaultRange = useMemo(() => {
-    const start = weekDays[0]?.iso ?? '';
-    const end = weekDays[6]?.iso ?? '';
-    return { start, end };
-  }, [weekDays]);
 
   return (
     <>
@@ -160,17 +126,6 @@ export function DutyCalendar() {
           {departmentOptions.map((d) => (
             <option key={d.id} value={d.id}>
               {d.name}
-            </option>
-          ))}
-        </select>
-        <select
-          value={hourFilter === '' ? '' : String(hourFilter)}
-          onChange={(e) => setHourFilter(e.target.value === '' ? '' : Number(e.target.value))}
-        >
-          <option value="">覆盖小时 [全部]</option>
-          {HOUR_OPTIONS.map((h) => (
-            <option key={h} value={h}>
-              {h}:00 有值班
             </option>
           ))}
         </select>
@@ -217,9 +172,6 @@ export function DutyCalendar() {
                       <div key={d.id} className={styles.dutyCell}>
                         <div className={styles.deptName}>{d.departmentName}</div>
                         <div className={styles.dutyPerson}>👤 {d.employeeName}</div>
-                        <div className={styles.timeRange}>
-                          {formatDutyTimeRange(d.startHour, d.endHour)}
-                        </div>
                         {d.note && <div className={styles.note}>{d.note}</div>}
                         <Button variant="text" onClick={() => setFormModal({ type: 'edit', record: d })}>
                           编辑
@@ -254,13 +206,7 @@ export function DutyCalendar() {
       )}
 
       {showBatch && (
-        <DutyBatchModal
-          departmentOptions={departmentOptions}
-          defaultStart={batchDefaultRange.start}
-          defaultEnd={batchDefaultRange.end}
-          onConfirm={handleBatch}
-          onClose={() => setShowBatch(false)}
-        />
+        <DutyBatchModal onImport={handleBatchImport} onClose={() => setShowBatch(false)} />
       )}
 
       {toast && <div className={styles.toast}>{toast}</div>}

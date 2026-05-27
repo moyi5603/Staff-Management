@@ -1,12 +1,19 @@
 import { Button } from '../../components/Button';
 import { ProjectMetaBadge } from '../../components/ProjectMetaBadge';
 import { StatusBadge } from '../../components/StatusBadge';
-import type { Project } from '../../types';
+import { useMemo } from 'react';
+import type { Employee, Project, ProjectMember } from '../../types';
+import { getProjectDisplayStatus } from '../../utils/projectStatus';
 import modalStyles from '../position/PositionList.module.css';
 import styles from './ProjectList.module.css';
 
+function memberDepartment(m: ProjectMember, employeeById: Map<string, Employee>): string {
+  return m.departmentName ?? employeeById.get(m.employeeId)?.departmentName ?? '—';
+}
+
 interface Props {
   project: Project;
+  employees: Employee[];
   onEdit: () => void;
   onClose: () => void;
   onStart?: () => void;
@@ -16,12 +23,15 @@ interface Props {
 
 export function ProjectDetailModal({
   project,
+  employees,
   onEdit,
   onClose,
   onStart,
   onEnd,
   onDelete,
 }: Props) {
+  const employeeById = useMemo(() => new Map(employees.map((e) => [e.id, e])), [employees]);
+
   return (
     <div className={modalStyles.modalOverlay} onClick={onClose}>
       <div className={`${modalStyles.modal} ${modalStyles.modalWide}`} onClick={(e) => e.stopPropagation()}>
@@ -30,7 +40,7 @@ export function ProjectDetailModal({
           <div className={styles.detailBadges}>
             <ProjectMetaBadge label={project.level} />
             <ProjectMetaBadge label={project.priority} />
-            <StatusBadge status={project.status} />
+            <StatusBadge status={getProjectDisplayStatus(project)} />
           </div>
         </div>
 
@@ -58,6 +68,7 @@ export function ProjectDetailModal({
                 <thead>
                   <tr>
                     <th>姓名</th>
+                    <th>部门</th>
                     <th>角色</th>
                   </tr>
                 </thead>
@@ -65,6 +76,7 @@ export function ProjectDetailModal({
                   {project.members.map((m) => (
                     <tr key={m.employeeId}>
                       <td>{m.name}</td>
+                      <td>{memberDepartment(m, employeeById)}</td>
                       <td>{m.role}</td>
                     </tr>
                   ))}

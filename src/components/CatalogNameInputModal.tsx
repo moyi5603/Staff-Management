@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
+import formStyles from '../styles/modalForm.module.css';
 import styles from './CatalogNameInputModal.module.css';
 
 interface Props {
@@ -50,8 +51,10 @@ export function CatalogNameInputModal({
         <h3 id="catalog-name-modal-title" className={styles.title}>
           {title}
         </h3>
-        {error && <p className={styles.error}>{error}</p>}
-        <label className={styles.field}>
+        {error && <p className={formStyles.formError}>{error}</p>}
+        <label
+          className={`${formStyles.formField} ${formStyles.formFieldFull} ${formStyles.formFieldCenter}`}
+        >
           <span>{label}</span>
           <input
             ref={inputRef}

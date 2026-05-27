@@ -1,5 +1,6 @@
 import { Button } from '../../components/Button';
 import type { AccountStatus, EmployeeStatus } from '../../types';
+import filterStyles from '../../styles/filterBar.module.css';
 import {
   emptyEmployeeListFilters,
   SEARCH_FIELD_OPTIONS,
@@ -28,9 +29,10 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
   const patch = (partial: Partial<EmployeeListFilters>) => onChange({ ...value, ...partial });
 
   return (
-    <div className={styles.filterForm}>
-      <div className={styles.filterRow}>
-        <div className={styles.filterItem}>
+    <div className={filterStyles.filterForm}>
+      <div className={filterStyles.filterRow}>
+        <div className={`${filterStyles.filterField} ${filterStyles.filterFieldGrow}`}>
+          <span className={filterStyles.filterLabel}>关键词</span>
           <div className={styles.searchCombo}>
             <select
               className={styles.searchType}
@@ -53,24 +55,23 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
           </div>
         </div>
 
-        <div className={styles.filterItemInline}>
-          <span className={styles.inlineLabel}>在职状态</span>
+        <label className={filterStyles.filterField}>
+          <span className={filterStyles.filterLabel}>在职状态</span>
           <select
-            className={styles.inlineSelect}
+            className={filterStyles.filterControl}
             value={value.status}
             onChange={(e) => patch({ status: e.target.value as EmployeeStatus | '' })}
           >
             <option value="">请选择</option>
             <option value="在职">在职</option>
-            <option value="休假">休假</option>
             <option value="离职">离职</option>
           </select>
-        </div>
+        </label>
 
-        <div className={styles.filterItemInline}>
-          <span className={styles.inlineLabel}>账号状态</span>
+        <label className={filterStyles.filterField}>
+          <span className={filterStyles.filterLabel}>账号状态</span>
           <select
-            className={styles.inlineSelect}
+            className={filterStyles.filterControl}
             value={value.accountStatus}
             onChange={(e) => patch({ accountStatus: e.target.value as AccountStatus | '' })}
           >
@@ -80,12 +81,12 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
               </option>
             ))}
           </select>
-        </div>
+        </label>
       </div>
 
-      <div className={styles.filterRow}>
-        <div className={styles.filterItemInline}>
-          <span className={styles.inlineLabel}>创建时间</span>
+      <div className={filterStyles.filterRow}>
+        <div className={`${filterStyles.filterField} ${filterStyles.filterFieldWide}`}>
+          <span className={filterStyles.filterLabel}>创建时间</span>
           <div className={styles.dateRange}>
             <span className={styles.dateIcon} aria-hidden>
               📅
@@ -108,8 +109,8 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
           </div>
         </div>
 
-        <div className={styles.filterItemInline}>
-          <span className={styles.inlineLabel}>生日</span>
+        <div className={`${filterStyles.filterField} ${filterStyles.filterFieldWide}`}>
+          <span className={filterStyles.filterLabel}>生日</span>
           <div className={styles.dateRange}>
             <span className={styles.dateIcon} aria-hidden>
               📅
@@ -132,10 +133,10 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
           </div>
         </div>
 
-        <div className={styles.filterItemInline}>
-          <span className={styles.inlineLabel}>司龄</span>
+        <label className={filterStyles.filterField}>
+          <span className={filterStyles.filterLabel}>司龄</span>
           <select
-            className={styles.inlineSelect}
+            className={filterStyles.filterControl}
             value={value.tenure}
             onChange={(e) => patch({ tenure: e.target.value as TenureRange | '' })}
           >
@@ -145,12 +146,12 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
               </option>
             ))}
           </select>
-        </div>
+        </label>
       </div>
 
-      <div className={styles.filterActions}>
+      <div className={filterStyles.filterActions}>
         <Button variant="primary" onClick={onSearch}>
-          🔍 搜索
+          搜索
         </Button>
         <Button
           variant="default"
@@ -159,7 +160,7 @@ export function EmployeeFilterBar({ value, onChange, onSearch, onReset }: Props)
             onReset();
           }}
         >
-          ↻ 重置
+          重置
         </Button>
       </div>
     </div>

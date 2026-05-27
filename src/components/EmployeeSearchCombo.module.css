@@ -1,0 +1,90 @@
+.comboWrap {
+  position: relative;
+  width: 100%;
+}
+
+.comboInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  font-size: var(--font-body);
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.comboInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.12);
+}
+
+.comboInput:disabled {
+  background: var(--color-bg);
+  cursor: not-allowed;
+}
+
+.comboDropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 40;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.comboOption,
+.comboOptionActive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comboOption:hover,
+.comboOptionActive {
+  background: var(--color-table-hover);
+}
+
+.comboOptionName {
+  font-size: var(--font-body);
+  color: var(--color-text);
+}
+
+.comboOptionMeta {
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+}
+
+.comboEmpty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 40;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: var(--font-helper);
+  color: var(--color-text-secondary);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}

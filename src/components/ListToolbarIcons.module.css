@@ -1,0 +1,38 @@
+.group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.iconBtn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.iconBtnActive {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.iconBtn svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}

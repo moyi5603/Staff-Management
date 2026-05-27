@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import { StatusBadge } from '../../components/StatusBadge';
 import { useEmployees } from '../../context/EmployeeContext';
 import { EmployeeCertificatesSection } from './EmployeeCertificatesSection';
 import { EmployeeInterestsSection } from './EmployeeInterestsSection';
@@ -18,18 +17,9 @@ const TABS = ['个人证书', '个人技能', '兴趣爱好', '参与项目'] as
 
 export function EmployeeDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { getById, removeEmployees } = useEmployees();
+  const { getById } = useEmployees();
   const emp = getById(id ?? '');
   const [tab, setTab] = useState<(typeof TABS)[number]>('个人证书');
-
-  const handleDelete = () => {
-    if (!emp) return;
-    if (window.confirm(`确定删除员工「${emp.name}」？刷新页面将恢复 Mock 数据。`)) {
-      removeEmployees([emp.id]);
-      navigate('/employee/list');
-    }
-  };
 
   if (!emp) {
     return (
@@ -52,9 +42,6 @@ export function EmployeeDetail() {
           <Link to={`/employee/form/${emp.id}`}>
             <Button variant="primary">编辑</Button>
           </Link>
-          <Button variant="danger" onClick={handleDelete}>
-            删除
-          </Button>
         </div>
       </div>
 
@@ -116,13 +103,20 @@ function BasicInfoPanel({ emp }: { emp: Employee }) {
       <InfoItem label="邮箱" value={emp.email} />
       <InfoItem label="部门" value={emp.departmentName} />
       <InfoItem label="岗位" value={emp.positionName} />
+      <InfoItem label="角色" value={emp.role} />
       <InfoItem label="入职日期" value={emp.joinDate} />
-      <InfoItem label="状态" value={<StatusBadge status={emp.status} />} />
+      <InfoItem label="在职状态" value={emp.status} />
+      <InfoItem label="账号状态" value={emp.accountStatus} />
       <InfoItem label="离职日期" value={formatDate(emp.leaveDate)} />
       <InfoItem label="工作地点" value={formatWorkLocation(emp)} />
       <InfoItem
         label="个人介绍"
         value={<span className={styles.preWrap}>{formatOptionalText(emp.bio)}</span>}
+        fullWidth
+      />
+      <InfoItem
+        label="备注"
+        value={<span className={styles.preWrap}>{formatOptionalText(emp.remark)}</span>}
         fullWidth
       />
     </div>

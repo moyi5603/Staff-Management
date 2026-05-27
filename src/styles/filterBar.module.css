@@ -1,0 +1,100 @@
+/* 全局筛选区：左侧标题 + 右侧控件（横向） */
+
+.filterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterGrid,
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 280px;
+  min-width: 240px;
+  max-width: 360px;
+  margin: 0;
+  font-size: var(--font-body);
+}
+
+.filterFieldWide {
+  flex: 1 1 360px;
+  max-width: 480px;
+}
+
+.filterFieldGrow {
+  flex: 2 1 400px;
+  max-width: none;
+}
+
+.filterLabel {
+  flex-shrink: 0;
+  width: 5.5em;
+  text-align: right;
+  color: var(--color-text);
+  font-size: var(--font-body);
+  white-space: nowrap;
+}
+
+.filterControl,
+.filterField input,
+.filterField select {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-body);
+  font-family: inherit;
+  line-height: 20px;
+  background: var(--color-white);
+  color: var(--color-text);
+}
+
+.filterControl:focus,
+.filterField input:focus,
+.filterField select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.filterField input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.filterActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/** 与筛选项同一行，不换行独占一行 */
+.filterActionsInline {
+  display: flex;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+@media (max-width: 720px) {
+  .filterField,
+  .filterFieldWide,
+  .filterFieldGrow {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}

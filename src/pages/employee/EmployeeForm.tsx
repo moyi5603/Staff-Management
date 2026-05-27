@@ -12,10 +12,12 @@ import {
 } from '../../context/EmployeeContext';
 import {
   EMPLOYEE_GENDER_OPTIONS,
+  EMPLOYEE_ROLE_OPTIONS,
   POLITICAL_STATUS_OPTIONS,
   type Certificate,
   type Employee,
   type EmployeeGender,
+  type EmployeeRole,
   type EmployeeStatus,
   type PoliticalStatus,
 } from '../../types';
@@ -56,6 +58,8 @@ export function EmployeeForm() {
   const [joinDate, setJoinDate] = useState(emp?.joinDate ?? new Date().toISOString().slice(0, 10));
   const [leaveDate, setLeaveDate] = useState(emp?.leaveDate ?? '');
   const [status, setStatus] = useState<EmployeeStatus>(emp?.status ?? '在职');
+  const [role, setRole] = useState<EmployeeRole>(emp?.role ?? '普通员工');
+  const [remark, setRemark] = useState(emp?.remark ?? '');
   const [certificates, setCertificates] = useState<Certificate[]>(
     () => emp?.certificates.map((c) => ({ ...c })) ?? [],
   );
@@ -120,6 +124,8 @@ export function EmployeeForm() {
       joinDate,
       leaveDate: status === '离职' && leaveDate.trim() ? leaveDate.trim() : undefined,
       status,
+      role,
+      remark: remark.trim() || undefined,
       certificates,
       skills,
       interests,
@@ -132,6 +138,7 @@ export function EmployeeForm() {
       const newEmp: Employee = {
         id: `emp-${Date.now()}`,
         ...base,
+        role,
         accountStatus: '正常',
         createdAt: new Date().toISOString().slice(0, 10),
         wechatBound: false,
@@ -243,7 +250,14 @@ export function EmployeeForm() {
                     setStatus(next);
                     if (next !== '离职') setLeaveDate('');
                   }}
-                  options={['在职', '休假', '离职']}
+                  options={['在职', '离职']}
+                />
+                <Field
+                  label="角色"
+                  type="select"
+                  value={role}
+                  onChange={(v) => setRole(v as EmployeeRole)}
+                  options={EMPLOYEE_ROLE_OPTIONS}
                 />
                 <Field
                   label={status === '离职' ? '离职日期*' : '离职日期'}
@@ -261,6 +275,14 @@ export function EmployeeForm() {
                   value={bio}
                   onChange={setBio}
                   placeholder="选填，简要介绍工作经历、专长等"
+                  className={styles.fieldFull}
+                />
+                <Field
+                  label="备注"
+                  type="textarea"
+                  value={remark}
+                  onChange={setRemark}
+                  placeholder="选填"
                   className={styles.fieldFull}
                 />
               </div>

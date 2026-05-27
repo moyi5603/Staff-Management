@@ -44,6 +44,7 @@ export function MemberSearchCombo({ availableEmployees, disabled, onAdd }: Props
         employeeId: exactEmployee.id,
         name: exactEmployee.name,
         role: DEFAULT_ROLE,
+        departmentName: exactEmployee.departmentName,
       });
       return;
     }
@@ -51,7 +52,12 @@ export function MemberSearchCombo({ availableEmployees, disabled, onAdd }: Props
   };
 
   const pickEmployee = (emp: Employee) => {
-    addMember({ employeeId: emp.id, name: emp.name, role: DEFAULT_ROLE });
+    addMember({
+      employeeId: emp.id,
+      name: emp.name,
+      role: DEFAULT_ROLE,
+      departmentName: emp.departmentName,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

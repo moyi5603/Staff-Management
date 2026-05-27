@@ -18,10 +18,11 @@ import {
   type ProjectListFilters,
 } from '../../utils/projectFilters';
 import { formatProjectMemberNames } from '../../utils/projectDisplay';
+import { getProjectDisplayStatus, isProjectOverdue } from '../../utils/projectStatus';
 import styles from './ProjectList.module.css';
 import toastStyles from '../position/PositionList.module.css';
 
-const STATUS_TABS = ['全部', '未启动', '进行中', '已结束'] as const;
+const STATUS_TABS = ['全部', '未启动', '进行中', '已延期', '已结束'] as const;
 type StatusTab = (typeof STATUS_TABS)[number];
 
 type FormModalState = { type: 'create' } | { type: 'edit'; project: Project };
@@ -110,18 +111,27 @@ export function ProjectList() {
       全部: searchFiltered.length,
       未启动: 0,
       进行中: 0,
+      已延期: 0,
       已结束: 0,
     };
     searchFiltered.forEach((p) => {
       if (p.status === '未启动') counts['未启动'] += 1;
-      if (p.status === '进行中') counts['进行中'] += 1;
-      if (p.status === '已结束') counts['已结束'] += 1;
+      else if (p.status === '已结束') counts['已结束'] += 1;
+      else if (p.status === '进行中') {
+        if (isProjectOverdue(p.status, p.endDate)) counts['已延期'] += 1;
+        else counts['进行中'] += 1;
+      }
     });
     return counts;
   }, [searchFiltered]);
 
   const filtered = useMemo(() => {
-    return searchFiltered.filter((p) => statusTab === '全部' || p.status === statusTab);
+    return searchFiltered.filter((p) => {
+      if (statusTab === '全部') return true;
+      if (statusTab === '已延期') return isProjectOverdue(p.status, p.endDate);
+      if (statusTab === '进行中') return p.status === '进行中' && !isProjectOverdue(p.status, p.endDate);
+      return p.status === statusTab;
+    });
   }, [searchFiltered, statusTab]);
 
   const handleSave = (values: ProjectFormValues) => {
@@ -149,16 +159,13 @@ export function ProjectList() {
     setFormModal({ type: 'edit', project });
   };
 
-  const changeStatus = (project: Project, status: ProjectStatus, endDate?: string) => {
+  const changeStatus = (project: Project, status: ProjectStatus) => {
     const prevIds = project.members.map((m) => m.employeeId);
     const updated: Project = {
       ...project,
       status,
-      endDate: status === '已结束' ? endDate ?? new Date().toISOString().slice(0, 10) : project.endDate,
+      endDate: status === '未启动' ? undefined : project.endDate,
     };
-    if (status !== '已结束') {
-      updated.endDate = status === '未启动' ? undefined : project.endDate;
-    }
     updateProject(updated, prevIds);
     setDetailProject((prev) => (prev?.id === updated.id ? updated : prev));
     showToast(status === '进行中' ? '项目已启动' : '项目已结束');
@@ -258,7 +265,7 @@ export function ProjectList() {
                         {p.name}
                       </button>
                     </td>
-                    <td>{p.status}</td>
+                    <td>{getProjectDisplayStatus(p)}</td>
                     <td>{p.level}</td>
                     <td>{p.priority}</td>
                     <td>{p.departmentName}</td>
@@ -352,6 +359,7 @@ export function ProjectList() {
       {detailProject && (
         <ProjectDetailModal
           project={detailProject}
+          employees={employees}
           onEdit={() => openEdit(detailProject)}
           onClose={() => setDetailProject(null)}
           onStart={
@@ -373,8 +381,7 @@ export function ProjectList() {
           <div className={toastStyles.modal} onClick={(e) => e.stopPropagation()}>
             <h3>确认结束项目</h3>
             <p className={styles.confirmText}>
-              确定结束项目「{endTarget.name}」？结束后将自动记录结束日期（
-              {new Date().toISOString().slice(0, 10)}）。
+              确定结束项目「{endTarget.name}」？结束后状态将变为「已结束」，结束日期保持不变。
             </p>
             <div className={toastStyles.modalActions}>
               <Button variant="default" onClick={() => setEndTarget(null)}>

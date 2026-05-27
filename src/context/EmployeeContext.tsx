@@ -89,8 +89,10 @@ export function exportEmployeesCsv(list: Employee[]) {
     '试用截止',
     '是否绑定微信小程序',
     '最近登录时间',
+    '角色',
     '在职状态',
     '账号状态',
+    '备注',
   ];
   const rows = list.map((e) =>
     [
@@ -105,8 +107,10 @@ export function exportEmployeesCsv(list: Employee[]) {
       e.probationEndDate ?? '',
       e.wechatBound ? '是' : '否',
       e.lastLoginAt ?? '',
+      e.role,
       e.status,
       e.accountStatus,
+      e.remark ?? '',
     ]
       .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
       .join(','),

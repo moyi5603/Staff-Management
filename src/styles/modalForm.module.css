@@ -1,0 +1,112 @@
+/* 弹窗表单：左侧标题、右侧控件（全局统一） */
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  font-size: var(--font-body);
+}
+
+.formFieldCenter {
+  align-items: center;
+}
+
+.formField > span {
+  flex-shrink: 0;
+  width: 7em;
+  padding-top: 8px;
+  text-align: right;
+  color: var(--color-text-secondary);
+  font-size: var(--font-body);
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.formFieldCenter > span {
+  padding-top: 0;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-body);
+  line-height: 20px;
+  color: var(--color-text);
+  background: var(--color-white);
+}
+
+.formField textarea {
+  resize: vertical;
+  min-height: 72px;
+  height: auto;
+}
+
+.formField input:focus,
+.formField select:focus,
+.formField textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.formField input:disabled,
+.formField select:disabled,
+.formField textarea:disabled {
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.formFieldFull {
+  width: 100%;
+}
+
+.formFieldControl {
+  flex: 1;
+  min-width: 0;
+}
+
+.radioGroup {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  min-height: var(--control-height);
+  padding-top: 2px;
+}
+
+.radioItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-body);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.radioItem input {
+  margin: 0;
+  accent-color: var(--color-primary);
+}
+
+.formError {
+  margin: 0 0 12px;
+  color: var(--color-danger);
+  font-size: var(--font-helper);
+}

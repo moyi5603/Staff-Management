@@ -1,3 +1,99 @@
+.filterCard {
+  margin-bottom: var(--card-gap);
+}
+
+.positionTable {
+  min-width: 1080px;
+}
+
+.opsColHead,
+.opsCol {
+  width: 120px;
+  white-space: nowrap;
+}
+
+.opsCol {
+  gap: 16px;
+}
+
+.opLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font: inherit;
+  font-size: var(--font-body);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.opLink:hover {
+  opacity: 0.85;
+}
+
+.opIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.opIcon svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.tableToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--card-gap);
+  gap: 12px;
+}
+
+.toolbarLeft {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tableToolbar > :last-child {
+  margin-left: auto;
+}
+
+.nameLink {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nameLink:hover {
+  text-decoration: underline;
+}
+
+.cellNowrap {
+  white-space: nowrap;
+}
+
+.dangerText {
+  color: var(--color-danger) !important;
+}
+
+.confirmText {
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-body);
+  line-height: 1.5;
+}
+
 .toast {
   position: fixed;
   bottom: 24px;
@@ -46,43 +142,6 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 20px;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.formField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: var(--font-body);
-}
-
-.formField span {
-  color: var(--color-text-secondary);
-  font-size: var(--font-helper);
-}
-
-.formField input,
-.formField select,
-.formField textarea {
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-}
-
-.formFieldFull {
-  grid-column: 1 / -1;
-}
-
-.formError {
-  margin: 0 0 12px;
-  color: var(--color-danger);
-  font-size: var(--font-helper);
 }
 
 .dutyEditor {

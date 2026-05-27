@@ -21,44 +21,9 @@
   font-size: var(--font-card);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: var(--font-body);
-}
-
-.field span {
-  color: var(--color-text-secondary);
-  font-size: var(--font-helper);
-}
-
-.field input {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: var(--control-height);
-  padding: var(--control-padding-y) var(--control-padding-x);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-  font-size: var(--font-body);
-}
-
-.field input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.error {
-  margin: 0 0 12px;
-  color: var(--color-danger);
-  font-size: var(--font-helper);
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 20px;
 }
